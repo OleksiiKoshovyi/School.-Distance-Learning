@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30523.141
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "School. Distance Learning", "School. Distance Learning\School. Distance Learning.csproj", "{8D26ACD0-9E7A-415C-8397-F52815C5A88D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8D26ACD0-9E7A-415C-8397-F52815C5A88D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D26ACD0-9E7A-415C-8397-F52815C5A88D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D26ACD0-9E7A-415C-8397-F52815C5A88D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D26ACD0-9E7A-415C-8397-F52815C5A88D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {777D860E-A384-4558-B98A-76A2388BC954}
+	EndGlobalSection
+EndGlobal
