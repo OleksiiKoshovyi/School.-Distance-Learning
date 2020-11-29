@@ -7,10 +7,13 @@
 );
 
 
+
+
 GO
 
-CREATE TRIGGER [dbo].[Grades_INSERT] 
-ON [dbo].[Grades] AFTER INSERT
+CREATE TRIGGER Grades_INSERT 
+ON Grades 
+	AFTER INSERT
 AS 
 /*IF IS_MEMBER ('db_owner') = 0*/
 BEGIN

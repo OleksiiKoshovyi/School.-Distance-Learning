@@ -8,8 +8,10 @@
     [Login]           VARCHAR (25)  NOT NULL,
     [Password]        VARCHAR (100) NOT NULL,
     PRIMARY KEY CLUSTERED ([TeacherId] ASC),
-    CHECK ([Login]>(5)),
-    CHECK ([Password]>(6)),
+    CONSTRAINT [CK__Teachers__Login__32E0915F] CHECK (len([Login])>=(5)),
+    CONSTRAINT [CK__Teachers__Passwo__33D4B598] CHECK (len([Password])>=(6)),
     UNIQUE NONCLUSTERED ([Login] ASC)
 );
+
+
 

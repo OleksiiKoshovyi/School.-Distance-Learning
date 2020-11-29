@@ -1,7 +1,7 @@
 ﻿-- =============================================
 -- CurrDate date: <CurrDate Date>
 -- =============================================
-CREATE FUNCTION [dbo].[GetSemesterNumber]
+CREATE FUNCTION GetSemesterNumber
 (
 	@CurrDate DATE
 )
