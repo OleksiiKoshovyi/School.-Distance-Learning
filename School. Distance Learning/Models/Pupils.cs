@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace School._Distance_Learning.Models
 {
@@ -15,6 +16,8 @@ namespace School._Distance_Learning.Models
         public string FirstName { get; set; }
         public string SurName { get; set; }
         public string Patronymic { get; set; }
+
+        [DataType(DataType.Date)]
         public DateTime Dob { get; set; }
         public int GradeId { get; set; }
         public string Login { get; set; }
