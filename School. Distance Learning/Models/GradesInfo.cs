@@ -6,6 +6,6 @@ namespace School._Distance_Learning.Models
     public partial class GradesInfo
     {
         public int GradeId { get; set; }
-        public int? GradeName { get; set; }
+        public string GradeName { get; set; }
     }
 }

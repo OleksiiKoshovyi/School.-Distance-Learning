@@ -19,9 +19,25 @@ namespace School._Distance_Learning.Controllers
         }
 
         // GET: Pupils
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
         {
-            var schoolDLContext = _context.Pupils.Include(p => p.Grade);
+            // WHERE RowNumber BETWEEN 10 AND 20;
+            var schoolDLContext = _context.Pupils.Include(p => p.Grade).Join(_context.GradesInfo,
+                p => p.GradeId,
+                gi => gi.GradeId,
+                (p, gi) => new ViewModels.Pupils.IndexViewModel(p, gi.GradeName))
+                .Skip((page - 1) * pageSize)
+                .Take(page * pageSize);
+
+            #region SQL
+            /*
+              SELECT FirstName, SurName, Patronymic, DOB, Login, Password, GradeName 
+              FROM Pupils p 
+              LEFT JOIN GradesInfo gi ON p.GradeId = gi.GradeId 
+              WHERE RowNumber BETWEEN {(page - 1) * pageSize} AND {page  * pageSize};
+            */
+            #endregion
+
             return View(await schoolDLContext.ToListAsync());
         }
 
@@ -32,7 +48,6 @@ namespace School._Distance_Learning.Controllers
             {
                 return NotFound();
             }
-
             var pupils = await _context.Pupils
                 .Include(p => p.Grade)
                 .FirstOrDefaultAsync(m => m.PupilId == id);
@@ -47,7 +62,7 @@ namespace School._Distance_Learning.Controllers
         // GET: Pupils/Create
         public IActionResult Create()
         {
-            ViewData["GradeId"] = new SelectList(_context.Grades, "GradeId", "Letter");
+            ViewData["GradeId"] = new SelectList(_context.GradesInfo, "GradeId", "GradeName");
             return View();
         }
 
@@ -81,7 +96,7 @@ namespace School._Distance_Learning.Controllers
             {
                 return NotFound();
             }
-            ViewData["GradeId"] = new SelectList(_context.Grades, "GradeId", "Letter", pupils.GradeId);
+            ViewData["GradeId"] = new SelectList(_context.GradesInfo, "GradeId", "GradeName", pupils.GradeId);
             return View(pupils);
         }
 
@@ -117,7 +132,7 @@ namespace School._Distance_Learning.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GradeId"] = new SelectList(_context.Grades, "GradeId", "Letter", pupils.GradeId);
+            ViewData["GradeId"] = new SelectList(_context.GradesInfo, "GradeId", "GradeName", pupils.GradeId);
             return View(pupils);
         }
 

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<School._Distance_Learning.Models.Pupils>
+﻿@model IEnumerable<School._Distance_Learning.ViewModels.Pupils.IndexViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,25 +13,25 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.FirstName)
+                @Html.DisplayNameFor(model => model.Pupils.FirstName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.SurName)
+                @Html.DisplayNameFor(model => model.Pupils.SurName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Patronymic)
+                @Html.DisplayNameFor(model => model.Pupils.Patronymic)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Dob)
+                @Html.DisplayNameFor(model => model.Pupils.Dob)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Login)
+                @Html.DisplayNameFor(model => model.Pupils.Login)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Password)
+                @Html.DisplayNameFor(model => model.Pupils.Password)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Grade)
+                @Html.DisplayNameFor(model => model.GradeName)
             </th>
             <th></th>
         </tr>
@@ -40,30 +40,30 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
+                @Html.DisplayFor(modelItem => item.Pupils.FirstName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.SurName)
+                @Html.DisplayFor(modelItem => item.Pupils.SurName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Patronymic)
+                @Html.DisplayFor(modelItem => item.Pupils.Patronymic)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Dob)
+                @Html.DisplayFor(modelItem => item.Pupils.Dob)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Login)
+                @Html.DisplayFor(modelItem => item.Pupils.Login)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Password)
+                @Html.DisplayFor(modelItem => item.Pupils.Password)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Grade.Letter)
+                @Html.DisplayFor(modelItem => item.GradeName)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.PupilId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.PupilId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.PupilId">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.Pupils.PupilId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Pupils.PupilId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Pupils.PupilId">Delete</a>
             </td>
         </tr>
 }
