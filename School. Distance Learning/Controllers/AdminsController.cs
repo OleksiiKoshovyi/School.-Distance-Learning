@@ -19,9 +19,12 @@ namespace School._Distance_Learning.Controllers
         }
 
         // GET: Admins
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
         {
-            return View(await _context.Admins.ToListAsync());
+            return View(await _context.Admins
+                .Skip((page - 1) * pageSize)
+                .Take(page * pageSize)
+                .ToListAsync());
         }
 
         // GET: Admins/Details/5

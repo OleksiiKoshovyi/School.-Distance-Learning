@@ -21,8 +21,7 @@ namespace School._Distance_Learning.Controllers
         // GET: Pupils
         public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
         {
-            // WHERE RowNumber BETWEEN 10 AND 20;
-            var schoolDLContext = _context.Pupils.Include(p => p.Grade).Join(_context.GradesInfo,
+                var schoolDLContext = _context.Pupils.Include(p => p.Grade).Join(_context.GradesInfo,
                 p => p.GradeId,
                 gi => gi.GradeId,
                 (p, gi) => new ViewModels.Pupils.IndexViewModel(p, gi.GradeName))
@@ -48,9 +47,11 @@ namespace School._Distance_Learning.Controllers
             {
                 return NotFound();
             }
+
             var pupils = await _context.Pupils
                 .Include(p => p.Grade)
                 .FirstOrDefaultAsync(m => m.PupilId == id);
+
             if (pupils == null)
             {
                 return NotFound();
