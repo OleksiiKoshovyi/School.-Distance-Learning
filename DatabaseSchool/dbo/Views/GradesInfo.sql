@@ -1,3 +1,3 @@
 ﻿CREATE VIEW GradesInfo AS
-SELECT GradeId, (dbo.GetGradeNumber(GETDATE(), FirstYear))|Letter AS GradeName 
+SELECT GradeId, CONCAT(STR(dbo.GetGradeNumber(GETDATE(), FirstYear)),' ',Letter) AS GradeName 
 FROM Grades;
