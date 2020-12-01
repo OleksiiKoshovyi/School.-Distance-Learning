@@ -87,5 +87,6 @@
     <Build Include="dbo\Functions\GetWeekNumber.sql" />
     <Build Include="dbo\Functions\GetOddness.sql" />
     <Build Include="dbo\Functions\IsHolidayNow.sql" />
+    <Build Include="dbo\Views\TeachersInfo.sql" />
   </ItemGroup>
 </Project>
