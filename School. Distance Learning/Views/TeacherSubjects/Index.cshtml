@@ -1,0 +1,47 @@
+﻿@model IEnumerable<School._Distance_Learning.Models.TeacherSubject>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.HoursNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Subject)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Teacher)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.HoursNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Subject.SubjectName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Teacher.SurName) @Html.DisplayFor(modelItem => item.Teacher.FirstName) @Html.DisplayFor(modelItem => item.Teacher.Patronymic)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.TeacherSubjectId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.TeacherSubjectId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.TeacherSubjectId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

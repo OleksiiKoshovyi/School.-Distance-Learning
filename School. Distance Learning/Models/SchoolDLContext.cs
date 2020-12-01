@@ -31,6 +31,7 @@ namespace School._Distance_Learning.Models
         public virtual DbSet<TeacherSubject> TeacherSubject { get; set; }
         public virtual DbSet<TeacherSubjectGroup> TeacherSubjectGroup { get; set; }
         public virtual DbSet<Teachers> Teachers { get; set; }
+        public virtual DbSet<TeachersInfo> TeachersInfo { get; set; }
         public virtual DbSet<Timetables> Timetables { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -337,6 +338,15 @@ namespace School._Distance_Learning.Models
                     .IsRequired()
                     .HasMaxLength(25)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<TeachersInfo>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("TeachersInfo");
+
+                entity.Property(e => e.TeacherId).ValueGeneratedOnAdd();
             });
 
             modelBuilder.Entity<Timetables>(entity =>
