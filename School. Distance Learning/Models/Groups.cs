@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace School._Distance_Learning.Models
 {
@@ -13,6 +14,8 @@ namespace School._Distance_Learning.Models
 
         public int GroupId { get; set; }
         public int? GroupTypeId { get; set; }
+
+        [Required]
         public int GradeId { get; set; }
 
         public virtual Grades Grade { get; set; }

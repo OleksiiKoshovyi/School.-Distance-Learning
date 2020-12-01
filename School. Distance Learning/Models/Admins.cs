@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -11,10 +12,14 @@ namespace School._Distance_Learning.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int AdminId { get; set; }
 
-        [StringLength(25, MinimumLength = 5, ErrorMessage = "Must be at least 5 characters long.")]
+        [Required]
+        [StringLength(25, MinimumLength = 5)]
+        [Remote(action: "IsLoginUnique", controller: "Admins",
+            ErrorMessage = "account with this login already exists")]
         public string Login { get; set; }
 
-        [StringLength(25, MinimumLength = 6, ErrorMessage = "Must be at least 6 characters long.")]
+        [Required]
+        [StringLength(25, MinimumLength = 6)]
         public string Password { get; set; }
     }
 }

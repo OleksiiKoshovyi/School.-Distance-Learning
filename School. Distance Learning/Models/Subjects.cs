@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace School._Distance_Learning.Models
 {
@@ -13,7 +14,13 @@ namespace School._Distance_Learning.Models
         }
 
         public int SubjectId { get; set; }
+
+        [Required]
+        [StringLength(50, MinimumLength = 2)]
         public string SubjectName { get; set; }
+
+        [Required]
+        [Range(1, 10)]
         public int Complexity { get; set; }
 
         public virtual ICollection<GradeSubject> GradeSubject { get; set; }

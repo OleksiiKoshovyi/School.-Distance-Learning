@@ -171,5 +171,15 @@ namespace School._Distance_Learning.Controllers
         {
             return _context.Pupils.Any(e => e.PupilId == id);
         }
+
+        [AcceptVerbs("Get", "Post")]
+        public IActionResult IsLoginUnique(Pupils pupil)
+        {
+            if (_context.Pupils.Any(p => p.Login == pupil.Login && p.PupilId != pupil.PupilId))
+            {
+                return Json(false);
+            }
+            return Json(true);
+        }
     }
 }

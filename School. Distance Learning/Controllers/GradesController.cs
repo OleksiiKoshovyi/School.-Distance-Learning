@@ -148,5 +148,16 @@ namespace School._Distance_Learning.Controllers
         {
             return _context.Grades.Any(e => e.GradeId == id);
         }
+
+        [AcceptVerbs("Get", "Post")]
+        public IActionResult IsGradeUnique(Grades grade)
+        {
+            if (_context.Grades.Any(g => g.FirstYear == grade.FirstYear 
+                && g.Letter == grade.Letter && g.GradeId != grade.GradeId))
+            {
+                return Json(false);
+            }
+            return Json(true);
+        }
     }
 }
