@@ -163,5 +163,17 @@ namespace School._Distance_Learning.Controllers
         {
             return _context.TeacherSubject.Any(e => e.TeacherSubjectId == id);
         }
+
+        [AcceptVerbs("Get", "Post")]
+        public IActionResult IsTeacherSubjectsUnique(TeacherSubject tsub)
+        {
+            if (_context.TeacherSubject.Any(ts => ts.TeacherId == tsub.TeacherId 
+                && ts.SubjectId == tsub.SubjectId 
+                && ts.TeacherSubjectId != tsub.TeacherSubjectId))
+            {
+                return Json(false);
+            }
+            return Json(true);
+        }
     }
 }
