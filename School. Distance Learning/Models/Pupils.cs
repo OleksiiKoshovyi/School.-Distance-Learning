@@ -37,6 +37,7 @@ namespace School._Distance_Learning.Models
         [Required]
         [StringLength(25, MinimumLength = 5)]
         [Remote(action: "IsLoginUnique", controller: "Pupils",
+            AdditionalFields = "PupilId",
             ErrorMessage = "account with this login already exists")]
         public string Login { get; set; }
 
