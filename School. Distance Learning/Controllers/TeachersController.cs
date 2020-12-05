@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using School._Distance_Learning.Models;
+using School._Distance_Learning.ViewModels;
 
 namespace School._Distance_Learning.Controllers
 {
@@ -19,12 +20,63 @@ namespace School._Distance_Learning.Controllers
         }
 
         // GET: Teachers
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(
+     string sortOrder,
+     string currentFilter,
+     string searchString,
+     int? pageNumber)
         {
-            return View(await _context.Teachers
-                .Skip((page - 1) * pageSize)
-                .Take(page * pageSize)
-                .ToListAsync());
+            ViewData["SurNameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "SurName_desc" : "";
+            ViewData["FirstNameSortParm"] = sortOrder == "FirstName" ? "FirstName_desc" : "FirstName";
+            ViewData["PatronymicSortParm"] = sortOrder == "Patronymic" ? "Patronymic_desc" : "Patronymic";
+            ViewData["DobSortParm"] = sortOrder == "Dob" ? "Dob_desc" : "Dob";
+            ViewData["RecruitmentDateSortParm"] = sortOrder == "RecruitmentDate" ? "RecruitmentDate_desc" : "RecruitmentDate";
+            ViewData["LoginSortParm"] = sortOrder == "Login" ? "Login_desc" : "Login";
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            var teachers = from t in _context.Teachers
+                           select t;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                teachers = teachers.Where(s => s.SurName.Contains(searchString)
+                                       || s.FirstName.Contains(searchString));
+            }
+
+            if (string.IsNullOrEmpty(sortOrder))
+            {
+                sortOrder = "SurName";
+            }
+
+            bool descending = false;
+            if (sortOrder.EndsWith("_desc"))
+            {
+                sortOrder = sortOrder.Substring(0, sortOrder.Length - 5);
+                descending = true;
+            }
+
+            if (descending)
+            {
+                teachers = teachers.OrderByDescending(e => EF.Property<object>(e, sortOrder));
+            }
+            else
+            {
+                teachers = teachers.OrderBy(e => EF.Property<object>(e, sortOrder));
+            }
+
+            int pageSize = 5;
+            return View(await PaginatedList<Teachers>.CreateAsync(teachers.AsNoTracking(),
+                pageNumber ?? 1, pageSize));
         }
 
         // GET: Teachers/Details/5

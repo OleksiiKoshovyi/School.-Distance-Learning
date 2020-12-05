@@ -11,16 +11,22 @@
     <h4>Grades</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.GradeName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.GradeName)
+        </dd>
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.FirstYear)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.FirstYear)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Letter)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Letter)
         </dd>
     </dl>

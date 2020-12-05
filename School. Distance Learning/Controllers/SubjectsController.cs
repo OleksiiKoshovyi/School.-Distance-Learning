@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using School._Distance_Learning.Models;
+using School._Distance_Learning.ViewModels;
 
 namespace School._Distance_Learning.Controllers
 {
@@ -19,9 +20,59 @@ namespace School._Distance_Learning.Controllers
         }
 
         // GET: Subjects
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(
+    string sortOrder,
+    string currentFilter,
+    string searchString,
+    int? pageNumber)
         {
-            return View(await _context.Subjects.ToListAsync());
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["SubjectNameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "SubjectName_desc" : "";
+            ViewData["ComplexitySortParm"] = sortOrder == "Complexity" ? "Complexity_desc" : "Complexity";
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            var subjects = from s in _context.Subjects
+                           select s;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                subjects = subjects.Where(s => s.SubjectName.ToUpper().Contains(searchString.ToUpper()));
+            }
+
+            if (string.IsNullOrEmpty(sortOrder))
+            {
+                sortOrder = "SubjectName";
+            }
+
+            bool descending = false;
+            if (sortOrder.EndsWith("_desc"))
+            {
+                sortOrder = sortOrder.Substring(0, sortOrder.Length - 5);
+                descending = true;
+            }
+
+            if (descending)
+            {
+                subjects = subjects.OrderByDescending(e => EF.Property<object>(e, sortOrder));
+            }
+            else
+            {
+                subjects = subjects.OrderBy(e => EF.Property<object>(e, sortOrder));
+            }
+
+            int pageSize = 7;
+            return View(await PaginatedList<Subjects>.CreateAsync(subjects.AsNoTracking(),
+                pageNumber ?? 1, pageSize));
         }
 
         // GET: Subjects/Details/5
