@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "School. Distance Learning", "School. Distance Learning\School. Distance Learning.csproj", "{8D26ACD0-9E7A-415C-8397-F52815C5A88D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "School. Distance Learning", "School. Distance Learning\School. Distance Learning.csproj", "{8D26ACD0-9E7A-415C-8397-F52815C5A88D}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "DatabaseSchool", "DatabaseSchool\DatabaseSchool.sqlproj", "{7F3F1F4E-73D2-4C53-AB89-5AD0ADD4E40F}"
 EndProject
