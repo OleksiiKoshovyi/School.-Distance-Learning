@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using School._Distance_Learning.Models;
+using School._Distance_Learning.ViewModels;
+using School._Distance_Learning.ViewModels.Pupils;
 
 namespace School._Distance_Learning.Controllers
 {
@@ -19,25 +21,80 @@ namespace School._Distance_Learning.Controllers
         }
 
         // GET: Pupils
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(
+            string sortOrder,
+            string currentFilter,
+            string searchString,
+            int? pageNumber)
         {
-                var schoolDLContext = _context.Pupils.Include(p => p.Grade).Join(_context.GradesInfo,
-                p => p.GradeId,
-                gi => gi.GradeId,
-                (p, gi) => new ViewModels.Pupils.IndexViewModel(p, gi.GradeName))
-                .Skip((page - 1) * pageSize)
-                .Take(page * pageSize);
+
+            var schoolDLContext = _context.Pupils
+                .Include(p => p.Grade).Select(p => p);
+
+            ViewData["CurrentSort"] = sortOrder;
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString??"".ToUpper();
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                schoolDLContext = schoolDLContext
+                    .Where(s => s.FirstName.ToUpper().Contains(searchString)
+                    || s.SurName.ToUpper().Contains(searchString));
+            }
+
+            ViewData["SurNameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "SurNameSortParm_desc" : "";
+            ViewData["DobSortParm"] = sortOrder == "Dob" ? "Dob_desc" : "Dob";
+            ViewData["LoginSortParm"] = sortOrder == "Login" ? "Login_desc" : "Login";
+            ViewData["GradeSortParm"] = sortOrder == "GradeName" ? "GradeName_desc" : "GradeName";
+
+            switch (sortOrder)
+            {
+                case "SurNameSortParm_desc":
+                    schoolDLContext = schoolDLContext.OrderByDescending(s => s.SurName);
+                    break;
+                case "Dob":
+                    schoolDLContext = schoolDLContext.OrderBy(s => s.Dob);
+                    break;
+                case "Dob_desc":
+                    schoolDLContext = schoolDLContext.OrderByDescending(s => s.Dob);
+                    break;
+                case "GradeName_desc":
+                    schoolDLContext = schoolDLContext.OrderBy(s => s.Grade.FirstYear)
+                        .ThenByDescending(s => s.Grade.Letter);
+                    break;
+                case "GradeName":
+                    schoolDLContext = schoolDLContext.OrderByDescending(s => s.Grade.FirstYear)
+                        .ThenBy(s => s.Grade.Letter);
+                    break;
+                default:
+                    schoolDLContext = schoolDLContext.OrderBy(s => s.SurName);
+                    break;
+            }
+
+            int pageSize = 5;
+
+
+            return View(await PaginatedList<Pupils>.CreateAsync(schoolDLContext.AsNoTracking(),
+                pageNumber ?? 1, pageSize));
 
             #region SQL
-            /*
-              SELECT FirstName, SurName, Patronymic, DOB, Login, Password, GradeName 
+            /*             
+              SELECT FirstName, SurName, Patronymic, DOB, Login, Password, GradeName, g.GradeId, Letter, FirstYear
               FROM Pupils p 
               LEFT JOIN GradesInfo gi ON p.GradeId = gi.GradeId 
-              WHERE RowNumber BETWEEN {(page - 1) * pageSize} AND {page  * pageSize};
+              WHERE RowNumber BETWEEN {(page - 1) * pageSize} AND {page  * pageSize} 
+              AND UPPER(@item) LIKE @example
+              ORDER BY @Order_parametr;
             */
             #endregion
 
-            return View(await schoolDLContext.ToListAsync());
         }
 
         // GET: Pupils/Details/5

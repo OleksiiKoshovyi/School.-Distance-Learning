@@ -29,6 +29,19 @@ namespace School._Distance_Learning.Models
             ErrorMessage = "a grade with the same first year and a letter already exists")]
         public string Letter { get; set; }
 
+        public string GradeName 
+        { 
+            get 
+            {
+                int number = DateTime.Now.Year - FirstYear;
+                if (DateTime.Now.Month >= 9)
+                {
+                    number++;
+                }
+                return $"{number} {Letter}";
+            } 
+        }
+
         public virtual ICollection<GradeSubject> GradeSubject { get; set; }
         public virtual ICollection<Groups> Groups { get; set; }
         public virtual ICollection<Pupils> Pupils { get; set; }
