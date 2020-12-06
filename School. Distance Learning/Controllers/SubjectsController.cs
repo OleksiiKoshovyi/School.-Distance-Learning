@@ -57,7 +57,7 @@ namespace School._Distance_Learning.Controllers
             bool descending = false;
             if (sortOrder.EndsWith("_desc"))
             {
-                sortOrder = sortOrder.Substring(0, sortOrder.Length - 5);
+                sortOrder = sortOrder[0..^5];
                 descending = true;
             }
 

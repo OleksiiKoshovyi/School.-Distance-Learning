@@ -25,13 +25,19 @@ namespace School._Distance_Learning.Controllers
             string sortOrder,
             string currentFilter,
             string searchString,
-            int? pageNumber)
+            int? pageNumber,
+            string name,
+            DateTime? dobstart,
+            DateTime? dobend,
+            string login,
+            int? gradeid)
         {
 
-            var schoolDLContext = _context.Pupils
+            var pupils = _context.Pupils
                 .Include(p => p.Grade).Select(p => p);
 
-            ViewData["CurrentSort"] = sortOrder;
+            #region Search
+
             if (searchString != null)
             {
                 pageNumber = 1;
@@ -44,44 +50,91 @@ namespace School._Distance_Learning.Controllers
             ViewData["CurrentFilter"] = searchString??"".ToUpper();
             if (!string.IsNullOrEmpty(searchString))
             {
-                schoolDLContext = schoolDLContext
-                    .Where(s => s.FirstName.ToUpper().Contains(searchString)
-                    || s.SurName.ToUpper().Contains(searchString));
+                searchString = searchString.ToUpper();
+                pupils = pupils
+                    .Where(p => p.FirstName.ToUpper().Contains(searchString)
+                    || p.SurName.ToUpper().Contains(searchString)
+                    || p.Patronymic.ToUpper().Contains(searchString)
+                    || p.Login.ToUpper().Contains(searchString));
             }
 
+            #endregion
+
+            #region OrderBy
+
+            ViewData["CurrentSort"] = sortOrder;
+
             ViewData["SurNameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "SurNameSortParm_desc" : "";
+            ViewData["FirstNameSortParm"] = sortOrder == "FirstName" ? "FirstName_desc" : "FirstName";
+            ViewData["PatronymicSortParm"] = sortOrder == "Patronymic" ? "Patronymic_desc" : "Patronymic";
             ViewData["DobSortParm"] = sortOrder == "Dob" ? "Dob_desc" : "Dob";
             ViewData["LoginSortParm"] = sortOrder == "Login" ? "Login_desc" : "Login";
             ViewData["GradeSortParm"] = sortOrder == "GradeName" ? "GradeName_desc" : "GradeName";
 
-            switch (sortOrder)
+            pupils = sortOrder switch
             {
-                case "SurNameSortParm_desc":
-                    schoolDLContext = schoolDLContext.OrderByDescending(s => s.SurName);
-                    break;
-                case "Dob":
-                    schoolDLContext = schoolDLContext.OrderBy(s => s.Dob);
-                    break;
-                case "Dob_desc":
-                    schoolDLContext = schoolDLContext.OrderByDescending(s => s.Dob);
-                    break;
-                case "GradeName_desc":
-                    schoolDLContext = schoolDLContext.OrderBy(s => s.Grade.FirstYear)
-                        .ThenByDescending(s => s.Grade.Letter);
-                    break;
-                case "GradeName":
-                    schoolDLContext = schoolDLContext.OrderByDescending(s => s.Grade.FirstYear)
-                        .ThenBy(s => s.Grade.Letter);
-                    break;
-                default:
-                    schoolDLContext = schoolDLContext.OrderBy(s => s.SurName);
-                    break;
+                "SurNameSortParm_desc" => pupils.OrderByDescending(s => s.SurName),
+                "FirstName" => pupils.OrderBy(s => s.FirstName),
+                "FirstName_desc" => pupils.OrderByDescending(s => s.FirstName),
+                "Patronymic" => pupils.OrderBy(s => s.Patronymic),
+                "Patronymic_desc" => pupils.OrderByDescending(s => s.Patronymic),
+                "Login" => pupils.OrderBy(s => s.Login),
+                "Login_desc" => pupils.OrderByDescending(s => s.Login),
+                "Dob" => pupils.OrderBy(s => s.Dob),
+                "Dob_desc" => pupils.OrderByDescending(s => s.Dob),
+                "GradeName_desc" => pupils.OrderBy(s => s.Grade.FirstYear)
+                    .ThenByDescending(s => s.Grade.Letter),
+                "GradeName" => pupils.OrderByDescending(s => s.Grade.FirstYear)
+                    .ThenBy(s => s.Grade.Letter),
+                _ => pupils.OrderBy(s => s.SurName),
+            };
+
+            #endregion
+
+            #region filter
+
+            ViewData["GradeId"] = new SelectList(_context.GradesInfo, "GradeId", "GradeName");
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                ViewData["CurrentFilterName"] = name;
+                name = name.ToUpper();
+                pupils = pupils
+                    .Where(p => p.FirstName.ToUpper().Contains(name)
+                    || p.SurName.ToUpper().Contains(name)
+                    || p.Patronymic.ToUpper().Contains(name));
+
             }
+            if (!string.IsNullOrEmpty(login))
+            {
+                ViewData["CurrentFilterLogin"] = login;
+                login = login.ToUpper();
+                pupils = pupils
+                    .Where(s => s.Login.ToUpper().Contains(login));
+
+            }
+            if (gradeid != null && gradeid != 0)
+            {
+                ViewData["CurrentFilterGradeId"] = new SelectList(_context.GradesInfo, "GradeId", "GradeName", gradeid);
+                pupils = pupils
+                    .Where(p => p.GradeId.Equals(gradeid));
+            }
+            if (dobstart != null)
+            {
+                ViewData["CurrentFilterDobStart"] = dobstart?.ToString("yyyy-MM-dd");
+                pupils = pupils.Where(p => p.Dob.Date >= ((DateTime)dobstart).Date);
+            }
+            if (dobend != null)
+            {
+                ViewData["CurrentFilterDobEnd"] = dobend?.ToString("yyyy-MM-dd");
+                pupils = pupils.Where(p => p.Dob.Date <= ((DateTime)dobend).Date);
+            }
+
+            #endregion
 
             int pageSize = 5;
 
-
-            return View(await PaginatedList<Pupils>.CreateAsync(schoolDLContext.AsNoTracking(),
+            return View(await PaginatedList<Pupils>.CreateAsync(pupils.AsNoTracking(),
                 pageNumber ?? 1, pageSize));
 
             #region SQL
@@ -92,6 +145,14 @@ namespace School._Distance_Learning.Controllers
               WHERE RowNumber BETWEEN {(page - 1) * pageSize} AND {page  * pageSize} 
               AND UPPER(@item) LIKE @example
               ORDER BY @Order_parametr;
+
+              filter:
+              WHERE UPPER(surname) LIKE UPPER(@surname)
+                AND UPPER(firstname) LIKE UPPER(@firstname) 
+                AND UPPER(patronymic) LIKE UPPER(@patronymic)
+                AND UPPER(login) LIKE UPPER(@login)
+                AND dob BETWEEN @dobstart AND @dobend
+                AND gradeid = @gradeid;
             */
             #endregion
 
@@ -139,6 +200,15 @@ namespace School._Distance_Learning.Controllers
             }
             ViewData["GradeId"] = new SelectList(_context.Grades, "GradeId", "Letter", pupils.GradeId);
             return View(pupils);
+
+            #region SQL
+            /*
+
+             INSERT INTO pupils(FirstName,SurName,Patronymic,Dob,GradeId,Login,Password) 
+                VALUES(@FirstName,@SurName,@Patronymic,@Dob,@GradeId,@Login,@Password)
+
+             */
+            #endregion
         }
 
         // GET: Pupils/Edit/5
@@ -192,6 +262,15 @@ namespace School._Distance_Learning.Controllers
             }
             ViewData["GradeId"] = new SelectList(_context.GradesInfo, "GradeId", "GradeName", pupils.GradeId);
             return View(pupils);
+
+            #region SQL
+            /*
+
+             UPDATE INTO pupils SET FirstName = @FirstName, SurName = @SurName, Patronymic = @Patronymic, Dob = @Dob, GradeId = @GradeId, Login = @Login, Password = @Password
+                WHERE PupilId = @PupilId;
+
+             */
+            #endregion
         }
 
         // GET: Pupils/Delete/5
@@ -222,6 +301,14 @@ namespace School._Distance_Learning.Controllers
             _context.Pupils.Remove(pupils);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+
+            #region SQL
+            /*
+
+             DELETE pupils WHERE PupilId = @PupilId;
+
+             */
+            #endregion
         }
 
         private bool PupilsExists(int id)

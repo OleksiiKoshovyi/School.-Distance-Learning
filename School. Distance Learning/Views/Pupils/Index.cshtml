@@ -1,4 +1,4 @@
-﻿@model School._Distance_Learning.ViewModels.PaginatedList<Pupils>
+﻿@model School._Distance_Learning.ViewModels.PaginatedList<School._Distance_Learning.Models.Pupils>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,8 +13,27 @@
 <form asp-action="Index" method="get">
     <div class="form-actions no-color">
         <p>
-            Find by name: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
-            <input type="submit" value="Search" class="btn btn-default" /> |
+            Find: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+            <input type="submit" value="Search" class="btn btn-default"/> |
+            <a style="cursor:pointer;" 
+               onclick="toggle(document.getElementById('filter'))"> toggle filter ↓ </a> |
+            <a asp-action="Index">Back to Full List</a>
+        </p>
+    </div>
+</form>
+
+<form asp-action="Index" method="get" class="col-md-4">
+    <div style="display:none" class="form-actions no-color" id="filter">
+        <p>
+            Name: <input class="form-control" type="text" name="Name" value="@ViewData["CurrentFilterName"]" /><br>
+            Dob range:   <input class="form-control" type="date" name="DobStart" value="@ViewData["CurrentFilterDobStart"]" /> &nbsp; - &nbsp;
+            <input class="form-control" type="date" name="DobEnd" value="@ViewData["CurrentFilterDobEnd"]" /><br>
+            Login: <input class="form-control" type="text" name="Login" value="@ViewData["CurrentFilterLogin"]" /><br>
+            Grade:
+            @Html.DropDownList("grade", ViewBag.GradeId as SelectList, "-- Select One --",
+                htmlAttributes: new { @class = "form-control", @name = "Gradeid", @value = ViewData["CurrentFilterGradeId"] })
+            <br>
+            <input type="submit" value="Filter" class="btn btn-default" /> |
             <a asp-action="Index">Back to Full List</a>
         </p>
     </div>
@@ -24,22 +43,58 @@
     <thead>
         <tr>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["SurNameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">SurName</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["SurNameSortParm"]"
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   asp-route-name = "@ViewData["CurrentFilterName"]"
+                   asp-route-dobstart = "@ViewData["CurrentFilterDobStart"]"
+                   asp-route-dobend = "@ViewData["CurrentFilterDobEnd"]"
+                   asp-route-login = "@ViewData["CurrentFilterLogin"]"
+                   asp-route-gradeid = "@ViewData["CurrentFilterGradeId"]">SurName</a>
             </th>
             <th>
-                FirstName
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["FirstNameSortParm"]"
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   asp-route-name = "@ViewData["CurrentFilterName"]"
+                   asp-route-dobstart = "@ViewData["CurrentFilterDobStart"]"
+                   asp-route-dobend = "@ViewData["CurrentFilterDobEnd"]"
+                   asp-route-login = "@ViewData["CurrentFilterLogin"]"
+                   asp-route-gradeid = "@ViewData["CurrentFilterGradeId"]">FirstName</a>
             </th>
             <th>
-                Patronymic
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["PatronymicSortParm"]"
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   asp-route-name = "@ViewData["CurrentFilterName"]"
+                   asp-route-dobstart = "@ViewData["CurrentFilterDobStart"]"
+                   asp-route-dobend = "@ViewData["CurrentFilterDobEnd"]"
+                   asp-route-login = "@ViewData["CurrentFilterLogin"]"
+                   asp-route-gradeid = "@ViewData["CurrentFilterGradeId"]">Patronymic</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["DobSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Dob</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["DobSortParm"]"
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   asp-route-name = "@ViewData["CurrentFilterName"]"
+                   asp-route-dobstart = "@ViewData["CurrentFilterDobStart"]"
+                   asp-route-dobend = "@ViewData["CurrentFilterDobEnd"]"
+                   asp-route-login = "@ViewData["CurrentFilterLogin"]"
+                   asp-route-gradeid = "@ViewData["CurrentFilterGradeId"]">Dob</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["LoginSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Login</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["LoginSortParm"]"
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   asp-route-name = "@ViewData["CurrentFilterName"]"
+                   asp-route-dobstart = "@ViewData["CurrentFilterDobStart"]"
+                   asp-route-dobend = "@ViewData["CurrentFilterDobEnd"]"
+                   asp-route-login = "@ViewData["CurrentFilterLogin"]"
+                   asp-route-gradeid = "@ViewData["CurrentFilterGradeId"]">Login</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["GradeSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">GradeName</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["GradeSortParm"]"
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   asp-route-name = "@ViewData["CurrentFilterName"]"
+                   asp-route-dobstart = "@ViewData["CurrentFilterDobStart"]"
+                   asp-route-dobend = "@ViewData["CurrentFilterDobEnd"]"
+                   asp-route-login = "@ViewData["CurrentFilterLogin"]"
+                   asp-route-gradeid = "@ViewData["CurrentFilterGradeId"]">GradeName</a>
             </th>
             <th></th>
         </tr>
@@ -85,6 +140,11 @@
    asp-route-sortOrder="@ViewData["CurrentSort"]"
    asp-route-pageNumber="@(Model.PageIndex - 1)"
    asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   asp-route-name = "@ViewData["CurrentFilterName"]"
+   asp-route-dobstart = "@ViewData["CurrentFilterDobStart"]"
+   asp-route-dobend = "@ViewData["CurrentFilterDobEnd"]"
+   asp-route-login = "@ViewData["CurrentFilterLogin"]"
+   asp-route-gradeid = "@ViewData["CurrentFilterGradeId"]"
    class="btn btn-default @prevDisabled">
     Previous
 </a>
@@ -92,6 +152,11 @@
    asp-route-sortOrder="@ViewData["CurrentSort"]"
    asp-route-pageNumber="@(Model.PageIndex + 1)"
    asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   asp-route-name = "@ViewData["CurrentFilterName"]"
+   asp-route-dobstart = "@ViewData["CurrentFilterDobStart"]"
+   asp-route-dobend = "@ViewData["CurrentFilterDobEnd"]"
+   asp-route-login = "@ViewData["CurrentFilterLogin"]"
+   asp-route-gradeid = "@ViewData["CurrentFilterGradeId"]"
    class="btn btn-default @nextDisabled">
     Next
 </a>

@@ -21,18 +21,20 @@ namespace School._Distance_Learning.Controllers
 
         // GET: Teachers
         public async Task<IActionResult> Index(
-     string sortOrder,
-     string currentFilter,
-     string searchString,
-     int? pageNumber)
+             string sortOrder,
+             string currentFilter,
+             string searchString,
+             int? pageNumber,
+            string name,
+            DateTime? dobstart, DateTime? dobend,
+            DateTime? recdstart,  DateTime? recdend,
+            string login)
         {
-            ViewData["SurNameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "SurName_desc" : "";
-            ViewData["FirstNameSortParm"] = sortOrder == "FirstName" ? "FirstName_desc" : "FirstName";
-            ViewData["PatronymicSortParm"] = sortOrder == "Patronymic" ? "Patronymic_desc" : "Patronymic";
-            ViewData["DobSortParm"] = sortOrder == "Dob" ? "Dob_desc" : "Dob";
-            ViewData["RecruitmentDateSortParm"] = sortOrder == "RecruitmentDate" ? "RecruitmentDate_desc" : "RecruitmentDate";
-            ViewData["LoginSortParm"] = sortOrder == "Login" ? "Login_desc" : "Login";
 
+            var teachers = from t in _context.Teachers
+                           select t;
+
+            #region searching
             if (searchString != null)
             {
                 pageNumber = 1;
@@ -42,26 +44,37 @@ namespace School._Distance_Learning.Controllers
                 searchString = currentFilter;
             }
 
-            ViewData["CurrentFilter"] = searchString;
 
-            var teachers = from t in _context.Teachers
-                           select t;
+            ViewData["CurrentFilter"] = searchString;
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                teachers = teachers.Where(s => s.SurName.Contains(searchString)
-                                       || s.FirstName.Contains(searchString));
+                searchString = searchString.ToUpper();
+                teachers = teachers.Where(
+                    s => s.SurName.ToUpper().Contains(searchString)
+                    || s.FirstName.ToUpper().Contains(searchString)
+                    || s.Patronymic.ToUpper().Contains(searchString)
+                    || s.Login.ToUpper().Contains(searchString));
             }
+            #endregion  
 
+            #region OrderBy
             if (string.IsNullOrEmpty(sortOrder))
             {
                 sortOrder = "SurName";
             }
 
+            ViewData["SurNameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "SurName_desc" : "";
+            ViewData["FirstNameSortParm"] = sortOrder == "FirstName" ? "FirstName_desc" : "FirstName";
+            ViewData["PatronymicSortParm"] = sortOrder == "Patronymic" ? "Patronymic_desc" : "Patronymic";
+            ViewData["DobSortParm"] = sortOrder == "Dob" ? "Dob_desc" : "Dob";
+            ViewData["RecruitmentDateSortParm"] = sortOrder == "RecruitmentDate" ? "RecruitmentDate_desc" : "RecruitmentDate";
+            ViewData["LoginSortParm"] = sortOrder == "Login" ? "Login_desc" : "Login";
+
             bool descending = false;
             if (sortOrder.EndsWith("_desc"))
             {
-                sortOrder = sortOrder.Substring(0, sortOrder.Length - 5);
+                sortOrder = sortOrder[0..^5];
                 descending = true;
             }
 
@@ -73,10 +86,72 @@ namespace School._Distance_Learning.Controllers
             {
                 teachers = teachers.OrderBy(e => EF.Property<object>(e, sortOrder));
             }
+            #endregion
+
+            #region filtering
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                ViewData["CurrentFilterName"] = name;
+                name = name.ToUpper();
+                teachers = teachers
+                    .Where(p => p.FirstName.ToUpper().Contains(name)
+                    || p.SurName.ToUpper().Contains(name)
+                    || p.Patronymic.ToUpper().Contains(name));
+
+            }
+            if (!string.IsNullOrEmpty(login))
+            {
+                ViewData["CurrentFilterLogin"] = login;
+                login = login.ToUpper();
+                teachers = teachers
+                    .Where(s => s.Login.ToUpper().Contains(login));
+
+            }
+            if (dobstart != null)
+            {
+                ViewData["CurrentFilterDobStart"] = dobstart?.ToString("yyyy-MM-dd");
+                teachers = teachers.Where(p => p.Dob.Date >= ((DateTime)dobstart).Date);
+            }
+            if (dobend != null)
+            {
+                ViewData["CurrentFilterDobEnd"] = dobend?.ToString("yyyy-MM-dd");
+                teachers = teachers.Where(p => p.Dob.Date <= ((DateTime)dobend).Date);
+            }
+            if (recdstart != null)
+            {
+                ViewData["CurrentFilterRecDStart"] = recdstart?.ToString("yyyy-MM-dd");
+                teachers = teachers.Where(p => p.RecruitmentDate.Date >= ((DateTime)recdstart).Date);
+            }
+            if (recdend != null)
+            {
+                ViewData["CurrentFilterRecDEnd"] = recdend?.ToString("yyyy-MM-dd");
+                teachers = teachers.Where(p => p.RecruitmentDate.Date <= ((DateTime)recdend).Date);
+            }
+
+            #endregion
 
             int pageSize = 5;
             return View(await PaginatedList<Teachers>.CreateAsync(teachers.AsNoTracking(),
                 pageNumber ?? 1, pageSize));
+
+            #region SQL
+            /*             
+              SELECT TeacherId, FirstName, SurName, Patronymic, Dob, RecruitmentDate, Login
+              FROM Teachers t
+              WHERE RowNumber BETWEEN {(page - 1) * pageSize} AND {page  * pageSize} 
+              AND UPPER(@item) LIKE @example
+              ORDER BY @Order_parametr;
+
+              filter:
+              WHERE UPPER(surname) LIKE UPPER(@surname)
+                AND UPPER(firstname) LIKE UPPER(@firstname) 
+                AND UPPER(patronymic) LIKE UPPER(@patronymic)
+                AND UPPER(login) LIKE UPPER(@login)
+                AND dob BETWEEN @dobstart AND @dobend
+                AND RecruitmentDate BETWEEN @recdstart AND @recdend;
+            */
+            #endregion
         }
 
         // GET: Teachers/Details/5
@@ -117,6 +192,15 @@ namespace School._Distance_Learning.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(teachers);
+
+            #region SQL
+            /*
+
+             INSERT INTO teachers(FirstName,SurName,Patronymic,Dob,RecruitmentDate,Login,Password) 
+                VALUES(@FirstName,@SurName,@Patronymic,@Dob,@RecD,@Login,@Password)
+
+             */
+            #endregion
         }
 
         // GET: Teachers/Edit/5
@@ -168,6 +252,15 @@ namespace School._Distance_Learning.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(teachers);
+
+            #region SQL
+            /*
+
+             UPDATE INTO teachers SET FirstName = @FirstName, SurName = @SurName, Patronymic = @Patronymic, Dob = @Dob, RecruitmentDate = @RecD, Login = @Login, Password = @Password
+                WHERE TeacherId = @TeacherId;
+
+             */
+            #endregion
         }
 
         // GET: Teachers/Delete/5
@@ -186,6 +279,14 @@ namespace School._Distance_Learning.Controllers
             }
 
             return View(teachers);
+
+            #region SQL
+            /*
+
+             DELETE teachers WHERE TeacherId = @TeacherId;
+
+             */
+            #endregion
         }
 
         // POST: Teachers/Delete/5
