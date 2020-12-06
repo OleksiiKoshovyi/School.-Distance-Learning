@@ -139,12 +139,13 @@ namespace School._Distance_Learning.Controllers
 
             #region SQL
             /*             
-              SELECT FirstName, SurName, Patronymic, DOB, Login, Password, GradeName, g.GradeId, Letter, FirstYear
+              SELECT FirstName, SurName, Patronymic, DOB, Login, Password, GradeName, gi.GradeId
               FROM Pupils p 
               LEFT JOIN GradesInfo gi ON p.GradeId = gi.GradeId 
-              WHERE RowNumber BETWEEN {(page - 1) * pageSize} AND {page  * pageSize} 
-              AND UPPER(@item) LIKE @example
-              ORDER BY @Order_parametr;
+              WHERE UPPER(@item) LIKE UPPER(@example)
+              ORDER BY @Order_parametr
+              OFFSET     ((page - 1) * pageSize) ROWS       
+              FETCH NEXT (pageSize)      ROWS ONLY; 
 
               filter:
               WHERE UPPER(surname) LIKE UPPER(@surname)

@@ -1,0 +1,169 @@
+﻿@model School._Distance_Learning.ViewModels.Statistics.IndexViewModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <h5>Teachers Workload</h5>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                FullName
+            </th>
+            <th>
+                Working hours
+            </th>
+            <th>
+                Real working hours
+            </th>
+            <th>
+                Workload
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.TeacherWorkloads)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WorkingHoursNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RealWorkingHoursNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Workload)
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+
+<p>
+    <h5>Subjects Workload</h5>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Subject
+            </th>
+            <th>
+                Timtable hours
+            </th>
+            <th>
+                Homework hours
+            </th>
+            <th>
+                Workload
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.SubjectWorkloads)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SubjectName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TimetableHoursNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.HomeworkHoursNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Workload)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<p>
+    <h5>Turants</h5>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                FullName
+            </th>
+            <th>
+                Grade
+            </th>
+            <th>
+                Timetable hours
+            </th>
+            <th>
+                Skipping hours
+            </th>
+            <th>
+                Related skipping
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Turants)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GradeName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TimetableHoursNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SkippingClassesNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RelateNumber)
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+
+<p>
+    <h5>Dob per months</h5>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Month
+            </th>
+            <th>
+                DobNumber
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.DobPerMonths)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Month)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DobNumber)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
