@@ -1,0 +1,42 @@
+﻿@model School._Distance_Learning.Models.Timetables
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Timetables</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.WeekDayNumber)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.WeekDayNumber)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.LessonNumber)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.LessonNumber)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Oddness)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Oddness)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.TeacherSubjectGroup)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.TeacherSubjectGroup.TeacherSubjectGroupId)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.TimetableId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

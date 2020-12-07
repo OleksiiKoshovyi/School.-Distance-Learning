@@ -1,0 +1,53 @@
+﻿@model IEnumerable<School._Distance_Learning.Models.Timetables>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.WeekDayNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LessonNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Oddness)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TeacherSubjectGroup)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.WeekDayNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LessonNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Oddness)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TeacherSubjectGroup.TeacherSubjectGroupId)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.TimetableId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.TimetableId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.TimetableId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
