@@ -30,20 +30,20 @@
     <tbody>
         @foreach (var item in Model.TeacherWorkloads)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FullName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.WorkingHoursNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RealWorkingHoursNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Workload)
-            </td>
-        </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.WorkingHoursNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RealWorkingHoursNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Workload)
+                </td>
+            </tr>
         }
     </tbody>
 </table>
@@ -117,23 +117,23 @@
     <tbody>
         @foreach (var item in Model.Turants)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FullName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.GradeName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TimetableHoursNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SkippingClassesNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RelateNumber)
-            </td>
-        </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.GradeName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TimetableHoursNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SkippingClassesNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RelateNumber)
+                </td>
+            </tr>
         }
     </tbody>
 </table>
