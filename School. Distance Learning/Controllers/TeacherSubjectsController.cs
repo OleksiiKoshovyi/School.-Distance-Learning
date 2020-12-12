@@ -21,7 +21,9 @@ namespace School._Distance_Learning.Controllers
         // GET: TeacherSubjects
         public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
         {
-            var schoolDLContext = _context.TeacherSubject.Include(t => t.Subject).Include(t => t.Teacher)
+            var schoolDLContext = _context.TeacherSubject
+                .Include(t => t.Subject)
+                .Include(t => t.Teacher)
                 .Skip((page - 1) * pageSize)
                 .Take(page * pageSize);
             return View(await schoolDLContext.ToListAsync());
@@ -87,7 +89,7 @@ namespace School._Distance_Learning.Controllers
                 return NotFound();
             }
             ViewData["SubjectId"] = new SelectList(_context.Subjects, "SubjectId", "SubjectName", teacherSubject.SubjectId);
-            ViewData["TeacherId"] = new SelectList(_context.Teachers, "TeacherId", "FirstName", teacherSubject.TeacherId);
+            ViewData["TeacherId"] = new SelectList(_context.Teachers, "TeacherId", "FullName", teacherSubject.TeacherId);
             return View(teacherSubject);
         }
 
@@ -124,7 +126,7 @@ namespace School._Distance_Learning.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["SubjectId"] = new SelectList(_context.Subjects, "SubjectId", "SubjectName", teacherSubject.SubjectId);
-            ViewData["TeacherId"] = new SelectList(_context.Teachers, "TeacherId", "FirstName", teacherSubject.TeacherId);
+            ViewData["TeacherId"] = new SelectList(_context.Teachers, "TeacherId", "FullName", teacherSubject.TeacherId);
             return View(teacherSubject);
         }
 

@@ -18,6 +18,27 @@ namespace School._Distance_Learning.Models
         [Required]
         public int GradeId { get; set; }
 
+        public string GroupName 
+        {
+            get
+            {
+                if (GroupType != null)
+                {
+                    return $"{Grade.GradeName}: [{GroupType.GroupTypeName}]({GroupId})";
+                }
+                else 
+                {
+                    return Grade.GradeName;
+                }
+
+                /*List<string> names = new List<string>();
+                foreach (var item in TeacherSubjectGroup ?? new List<TeacherSubjectGroup>())
+                {
+
+                }*/
+            }     
+        }
+
         public virtual Grades Grade { get; set; }
         public virtual GroupTypes GroupType { get; set; }
         public virtual ICollection<GroupPupil> GroupPupil { get; set; }

@@ -21,7 +21,14 @@ namespace School._Distance_Learning.Controllers
         // GET: TeacherSubjectGroups
         public async Task<IActionResult> Index()
         {
-            var schoolDLContext = _context.TeacherSubjectGroup.Include(t => t.Group).Include(t => t.TeacherSubject);
+            var schoolDLContext = _context.TeacherSubjectGroup
+                .Include(t => t.Group)
+                .Include(t => t.Group.Grade)
+                .Include(t => t.Group.GroupType)
+                .Include(t => t.TeacherSubject)
+                .Include(t => t.TeacherSubject.Teacher)
+                .Include(t => t.TeacherSubject.Subject);
+
             return View(await schoolDLContext.ToListAsync());
         }
 
@@ -35,8 +42,13 @@ namespace School._Distance_Learning.Controllers
 
             var teacherSubjectGroup = await _context.TeacherSubjectGroup
                 .Include(t => t.Group)
+                .Include(t => t.Group.Grade)
+                .Include(t => t.Group.GroupType)
                 .Include(t => t.TeacherSubject)
+                .Include(t => t.TeacherSubject.Subject)
+                .Include(t => t.TeacherSubject.Teacher)
                 .FirstOrDefaultAsync(m => m.TeacherSubjectGroupId == id);
+
             if (teacherSubjectGroup == null)
             {
                 return NotFound();
@@ -48,8 +60,13 @@ namespace School._Distance_Learning.Controllers
         // GET: TeacherSubjectGroups/Create
         public IActionResult Create()
         {
-            ViewData["GroupId"] = new SelectList(_context.Groups, "GroupId", "GroupId");
-            ViewData["TeacherSubjectId"] = new SelectList(_context.TeacherSubject, "TeacherSubjectId", "TeacherSubjectId");
+            ViewData["GroupId"] = new SelectList(_context.Groups.Include(t => t.Grade).Include(t => t.GroupType), "GroupId", "GroupName");
+
+            ViewData["TeacherSubjectId"] = new SelectList(_context.TeacherSubject
+                .Include(t => t.Teacher)
+                .Include(t => t.Subject),
+                "TeacherSubjectId", "TeacherSubjectName");
+
             return View();
         }
 
@@ -66,8 +83,14 @@ namespace School._Distance_Learning.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GroupId"] = new SelectList(_context.Groups, "GroupId", "GroupId", teacherSubjectGroup.GroupId);
-            ViewData["TeacherSubjectId"] = new SelectList(_context.TeacherSubject, "TeacherSubjectId", "TeacherSubjectId", teacherSubjectGroup.TeacherSubjectId);
+            ViewData["GroupId"] = new SelectList(_context.Groups.Include(t => t.Grade), "GroupId", "GroupName", teacherSubjectGroup.GroupId);
+            
+            ViewData["TeacherSubjectId"] = new SelectList(_context.TeacherSubject
+                .Include(t => t.Teacher)
+                .Include(t => t.Subject),
+                "TeacherSubjectId", "TeacherSubjectName",
+                teacherSubjectGroup.TeacherSubjectId);
+
             return View(teacherSubjectGroup);
         }
 
@@ -84,8 +107,14 @@ namespace School._Distance_Learning.Controllers
             {
                 return NotFound();
             }
-            ViewData["GroupId"] = new SelectList(_context.Groups, "GroupId", "GroupId", teacherSubjectGroup.GroupId);
-            ViewData["TeacherSubjectId"] = new SelectList(_context.TeacherSubject, "TeacherSubjectId", "TeacherSubjectId", teacherSubjectGroup.TeacherSubjectId);
+            ViewData["GroupId"] = new SelectList(_context.Groups, "GroupId", "GroupName", teacherSubjectGroup.GroupId);
+
+            ViewData["TeacherSubjectId"] = new SelectList(_context.TeacherSubject
+                .Include(t => t.Teacher)
+                .Include(t => t.Subject),
+                "TeacherSubjectId", "TeacherSubjectName",
+                teacherSubjectGroup.TeacherSubjectId);
+
             return View(teacherSubjectGroup);
         }
 
@@ -121,8 +150,8 @@ namespace School._Distance_Learning.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GroupId"] = new SelectList(_context.Groups, "GroupId", "GroupId", teacherSubjectGroup.GroupId);
-            ViewData["TeacherSubjectId"] = new SelectList(_context.TeacherSubject, "TeacherSubjectId", "TeacherSubjectId", teacherSubjectGroup.TeacherSubjectId);
+            ViewData["GroupId"] = new SelectList(_context.Groups, "GroupId", "GroupName", teacherSubjectGroup.GroupId);
+            ViewData["TeacherSubjectId"] = new SelectList(_context.TeacherSubject, "TeacherSubjectId", "TeacherSubjectName", teacherSubjectGroup.TeacherSubjectId);
             return View(teacherSubjectGroup);
         }
 
@@ -136,7 +165,11 @@ namespace School._Distance_Learning.Controllers
 
             var teacherSubjectGroup = await _context.TeacherSubjectGroup
                 .Include(t => t.Group)
+                .Include(t => t.Group.GroupType)
+                .Include(t => t.Group.Grade)
                 .Include(t => t.TeacherSubject)
+                .Include(t => t.TeacherSubject.Subject)
+                .Include(t => t.TeacherSubject.Teacher)
                 .FirstOrDefaultAsync(m => m.TeacherSubjectGroupId == id);
             if (teacherSubjectGroup == null)
             {
@@ -160,6 +193,24 @@ namespace School._Distance_Learning.Controllers
         private bool TeacherSubjectGroupExists(int id)
         {
             return _context.TeacherSubjectGroup.Any(e => e.TeacherSubjectGroupId == id);
+        }
+
+        [AcceptVerbs("Get", "Post")]
+        public IActionResult IsTeacherSubjectGroupUnique(TeacherSubjectGroup tsubg)
+        {
+            if (_context.TeacherSubjectGroup
+                .Include(t => t.TeacherSubject)
+                .Any(tsg => tsg.GroupId == tsubg.GroupId
+                    && tsg.TeacherSubject.SubjectId 
+                        == (_context.TeacherSubject
+                        .Include(t => t.Subject)
+                        .Where(t => t.TeacherSubjectId == tsubg.TeacherSubjectId)
+                        .FirstOrDefault().SubjectId)
+                    && tsg.TeacherSubjectGroupId != tsubg.TeacherSubjectGroupId))
+            {
+                return Json(false);
+            }
+            return Json(true);
         }
     }
 }

@@ -30,6 +30,14 @@ namespace School._Distance_Learning.Models
         [Range(1, 40)]
         public int HoursNumber { get; set; }
 
+        public string TeacherSubjectName 
+        {
+            get
+            {
+                return $"{Teacher?.SurName}: {Subject?.SubjectName}; ";
+            }
+        }
+
         public virtual Subjects Subject { get; set; }
         public virtual Teachers Teacher { get; set; }
         public virtual ICollection<TeacherSubjectGroup> TeacherSubjectGroup { get; set; }

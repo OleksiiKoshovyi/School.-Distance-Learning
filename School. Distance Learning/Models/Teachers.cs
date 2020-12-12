@@ -44,6 +44,22 @@ namespace School._Distance_Learning.Models
         [StringLength(25, MinimumLength = 6)]
         public string Password { get; set; }
 
+        public string FullName 
+        { 
+            get 
+            {
+                return $"{SurName} {FirstName} {Patronymic}";
+            }
+        }
+
+        public string PartName
+        {
+            get
+            {
+                return $"{SurName} {(FirstName ?? " ")[0]}. {(Patronymic ?? " ")[0]}.";
+            }
+        }
+
         public virtual ICollection<TeacherSubject> TeacherSubject { get; set; }
     }
 }

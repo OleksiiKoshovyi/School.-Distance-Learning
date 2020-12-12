@@ -47,7 +47,16 @@ namespace School._Distance_Learning.Controllers
         // GET: Timetables/Create
         public IActionResult Create()
         {
-            ViewData["TeacherSubjectGroupId"] = new SelectList(_context.TeacherSubjectGroup, "TeacherSubjectGroupId", "TeacherSubjectGroupId");
+            ViewData["TeacherSubjectGroupId"] = new SelectList(_context.TeacherSubjectGroup
+                .Include(t => t.TeacherSubject)
+                .Include(t => t.TeacherSubject.Subject)
+                .Include(t => t.TeacherSubject.Teacher)
+                .Include(t => t.Group)
+                .Include(t => t.Group.GroupType)
+                .Include(t => t.Group.Grade),
+                "TeacherSubjectGroupId",
+                "TeacherSubjectGroupName");
+
             return View();
         }
 
@@ -64,7 +73,18 @@ namespace School._Distance_Learning.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TeacherSubjectGroupId"] = new SelectList(_context.TeacherSubjectGroup, "TeacherSubjectGroupId", "TeacherSubjectGroupId", timetables.TeacherSubjectGroupId);
+
+            ViewData["TeacherSubjectGroupId"] = new SelectList(_context.TeacherSubjectGroup
+                .Include(t => t.TeacherSubject)
+                .Include(t => t.TeacherSubject.Subject)
+                .Include(t => t.TeacherSubject.Teacher)
+                .Include(t => t.Group)
+                .Include(t => t.Group.GroupType)
+                .Include(t => t.Group.Grade),
+                "TeacherSubjectGroupId",
+                "TeacherSubjectGroupName",
+                timetables.TeacherSubjectGroupId);
+
             return View(timetables);
         }
 

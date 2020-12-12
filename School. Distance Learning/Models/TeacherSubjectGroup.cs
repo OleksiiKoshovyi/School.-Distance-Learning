@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace School._Distance_Learning.Models
 {
@@ -12,8 +14,21 @@ namespace School._Distance_Learning.Models
         }
 
         public int TeacherSubjectGroupId { get; set; }
+
+        [Required]
+        [Remote(action: "IsTeacherSubjectGroupUnique", controller: "TeacherSubjectGroups",
+            AdditionalFields = "GroupId",
+            ErrorMessage = "similar conformity already exists")]
         public int TeacherSubjectId { get; set; }
         public int GroupId { get; set; }
+
+        public string TeacherSubjectGroupName 
+        {
+            get
+            {
+                return $"{Group?.GroupName} : {TeacherSubject?.Subject?.SubjectName} : {TeacherSubject?.Teacher?.PartName}";
+            }
+        }
 
         public virtual Groups Group { get; set; }
         public virtual TeacherSubject TeacherSubject { get; set; }
