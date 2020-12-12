@@ -69,7 +69,7 @@ namespace School._Distance_Learning.ViewModels.Statistics
             {
                 if (TimetableHoursNumber != 0)
                 {
-                    return HomeworkHoursNumber / TimetableHoursNumber;
+                    return (double)HomeworkHoursNumber / (double)TimetableHoursNumber;
                 }
 
                 return 0;
