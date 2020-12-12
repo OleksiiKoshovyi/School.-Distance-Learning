@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -26,7 +27,9 @@ namespace School._Distance_Learning.Models
         public int Oddness { get; set; }
 
         [Required]
-        // Remote
+        [Remote(action: "IsTimetableUnique", controller: "Timetables",
+            AdditionalFields = "TimetableId,WeekDayNumber,LessonNumber,Oddness",
+            ErrorMessage = "account with this login already exists")]
         public int TeacherSubjectGroupId { get; set; }
 
         public virtual TeacherSubjectGroup TeacherSubjectGroup { get; set; }

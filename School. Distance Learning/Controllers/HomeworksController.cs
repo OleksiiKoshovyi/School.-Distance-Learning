@@ -21,7 +21,17 @@ namespace School._Distance_Learning.Controllers
         // GET: Homeworks
         public async Task<IActionResult> Index()
         {
-            var schoolDLContext = _context.Homeworks.Include(h => h.TeacherSubjectGroup);
+            var schoolDLContext = _context.Homeworks
+                .Include(t => t.TeacherSubjectGroup)
+                .Include(t => t.TeacherSubjectGroup.TeacherSubject)
+                .Include(t => t.TeacherSubjectGroup.TeacherSubject.Subject)
+                .Include(t => t.TeacherSubjectGroup.TeacherSubject.Teacher)
+                .Include(t => t.TeacherSubjectGroup.Group)
+                .Include(t => t.TeacherSubjectGroup.Group.GroupType)
+                .Include(t => t.TeacherSubjectGroup.Group.Grade)
+                .OrderBy(t => t.TeacherSubjectGroup.Group.GradeId)
+                .ThenBy(t => t.PassDate);
+
             return View(await schoolDLContext.ToListAsync());
         }
 
@@ -34,7 +44,13 @@ namespace School._Distance_Learning.Controllers
             }
 
             var homeworks = await _context.Homeworks
-                .Include(h => h.TeacherSubjectGroup)
+                .Include(t => t.TeacherSubjectGroup)
+                .Include(t => t.TeacherSubjectGroup.TeacherSubject)
+                .Include(t => t.TeacherSubjectGroup.TeacherSubject.Subject)
+                .Include(t => t.TeacherSubjectGroup.TeacherSubject.Teacher)
+                .Include(t => t.TeacherSubjectGroup.Group)
+                .Include(t => t.TeacherSubjectGroup.Group.GroupType)
+                .Include(t => t.TeacherSubjectGroup.Group.Grade)
                 .FirstOrDefaultAsync(m => m.HomeworkId == id);
             if (homeworks == null)
             {
@@ -47,7 +63,16 @@ namespace School._Distance_Learning.Controllers
         // GET: Homeworks/Create
         public IActionResult Create()
         {
-            ViewData["TeacherSubjectGroupId"] = new SelectList(_context.TeacherSubjectGroup, "TeacherSubjectGroupId", "TeacherSubjectGroupId");
+            ViewData["TeacherSubjectGroupId"] = new SelectList(_context.TeacherSubjectGroup
+                .Include(t => t.TeacherSubject)
+                .Include(t => t.TeacherSubject.Subject)
+                .Include(t => t.TeacherSubject.Teacher)
+                .Include(t => t.Group)
+                .Include(t => t.Group.GroupType)
+                .Include(t => t.Group.Grade),
+                "TeacherSubjectGroupId",
+                "TeacherSubjectGroupName");
+
             return View();
         }
 
@@ -56,7 +81,7 @@ namespace School._Distance_Learning.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("HomeworkId,PassDate,TeacherSubjectGroupId")] Homeworks homeworks)
+        public async Task<IActionResult> Create([Bind("HomeworkId,PassDate,TeacherSubjectGroupId,Homework")] Homeworks homeworks)
         {
             if (ModelState.IsValid)
             {
@@ -64,7 +89,18 @@ namespace School._Distance_Learning.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TeacherSubjectGroupId"] = new SelectList(_context.TeacherSubjectGroup, "TeacherSubjectGroupId", "TeacherSubjectGroupId", homeworks.TeacherSubjectGroupId);
+
+            ViewData["TeacherSubjectGroupId"] = new SelectList(_context.TeacherSubjectGroup
+                .Include(t => t.TeacherSubject)
+                .Include(t => t.TeacherSubject.Subject)
+                .Include(t => t.TeacherSubject.Teacher)
+                .Include(t => t.Group)
+                .Include(t => t.Group.GroupType)
+                .Include(t => t.Group.Grade),
+                "TeacherSubjectGroupId",
+                "TeacherSubjectGroupName",
+                homeworks.TeacherSubjectGroupId);
+
             return View(homeworks);
         }
 
@@ -90,7 +126,7 @@ namespace School._Distance_Learning.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("HomeworkId,PassDate,TeacherSubjectGroupId")] Homeworks homeworks)
+        public async Task<IActionResult> Edit(int id, [Bind("HomeworkId,PassDate,TeacherSubjectGroupId,Homework")] Homeworks homeworks)
         {
             if (id != homeworks.HomeworkId)
             {
@@ -117,7 +153,17 @@ namespace School._Distance_Learning.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TeacherSubjectGroupId"] = new SelectList(_context.TeacherSubjectGroup, "TeacherSubjectGroupId", "TeacherSubjectGroupId", homeworks.TeacherSubjectGroupId);
+            ViewData["TeacherSubjectGroupId"] = new SelectList(_context.TeacherSubjectGroup
+                .Include(t => t.TeacherSubject)
+                .Include(t => t.TeacherSubject.Subject)
+                .Include(t => t.TeacherSubject.Teacher)
+                .Include(t => t.Group)
+                .Include(t => t.Group.GroupType)
+                .Include(t => t.Group.Grade),
+                "TeacherSubjectGroupId",
+                "TeacherSubjectGroupName",
+                homeworks.TeacherSubjectGroupId);
+            
             return View(homeworks);
         }
 
@@ -154,6 +200,26 @@ namespace School._Distance_Learning.Controllers
         private bool HomeworksExists(int id)
         {
             return _context.Homeworks.Any(e => e.HomeworkId == id);
+        }
+
+        [AcceptVerbs("Get", "Post")]
+        public IActionResult IsHomeworkUnique(Homeworks hw)
+        {
+            if (_context.Homeworks
+                .Include(t => t.TeacherSubjectGroup)
+                .Include(t => t.TeacherSubjectGroup.TeacherSubject)
+                .Include(t => t.TeacherSubjectGroup.TeacherSubject.Subject)
+                .Include(t => t.TeacherSubjectGroup.TeacherSubject.Teacher)
+                .Include(t => t.TeacherSubjectGroup.Group)
+                .Include(t => t.TeacherSubjectGroup.Group.GroupType)
+                .Include(t => t.TeacherSubjectGroup.Group.Grade)
+                .Any(t => t.PassDate == hw.PassDate &&
+                t.TeacherSubjectGroupId == hw.TeacherSubjectGroupId &&
+                t.HomeworkId != hw.HomeworkId))
+            {
+                return Json(false);
+            }
+            return Json(true);
         }
     }
 }

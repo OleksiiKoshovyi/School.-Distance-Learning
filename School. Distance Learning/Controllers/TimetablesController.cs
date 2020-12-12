@@ -21,8 +21,31 @@ namespace School._Distance_Learning.Controllers
         // GET: Timetables
         public async Task<IActionResult> Index()
         {
-            var schoolDLContext = _context.Timetables.Include(t => t.TeacherSubjectGroup);
+            var schoolDLContext = _context.Timetables
+                .Include(t => t.TeacherSubjectGroup)
+                .Include(t => t.TeacherSubjectGroup.TeacherSubject)
+                .Include(t => t.TeacherSubjectGroup.TeacherSubject.Subject)
+                .Include(t => t.TeacherSubjectGroup.TeacherSubject.Teacher)
+                .Include(t => t.TeacherSubjectGroup.Group)
+                .Include(t => t.TeacherSubjectGroup.Group.GroupType)
+                .Include(t => t.TeacherSubjectGroup.Group.Grade)
+                .OrderBy(t => t.TeacherSubjectGroup.Group.GradeId)
+                .ThenBy(t => t.WeekDayNumber)
+                .ThenBy(t => t.LessonNumber);
             return View(await schoolDLContext.ToListAsync());
+
+            #region TT
+            /*
+                SELECT WeekDayNumber, LessonNumber, GradeName, SubjectName, Surname
+                FROM Timetables tt
+                LEFT JOIN TeacherSubjectGroup tsg ON tsg.TeacherSubjectGroupId = tt.TeacherSubjectGroupId
+                LEFT JOIN TeacherSubject ts ON ts.TeacherSubjectId = tsg.TeacherSubjectId
+                LEFT JOIN Teachers t ON t.TeacherId = ts.TeacherId
+                LEFT JOIN Subjects s ON s.SubjectId = ts.SubjectId
+                LEFT JOIN Groups g ON g.GroupId = tsg.GroupId
+                LEFT JOIN GradesInfo gi ON gi.GradeId = g.GradeId;
+             */
+            #endregion
         }
 
         // GET: Timetables/Details/5
@@ -35,6 +58,12 @@ namespace School._Distance_Learning.Controllers
 
             var timetables = await _context.Timetables
                 .Include(t => t.TeacherSubjectGroup)
+                .Include(t => t.TeacherSubjectGroup.TeacherSubject)
+                .Include(t => t.TeacherSubjectGroup.TeacherSubject.Subject)
+                .Include(t => t.TeacherSubjectGroup.TeacherSubject.Teacher)
+                .Include(t => t.TeacherSubjectGroup.Group)
+                .Include(t => t.TeacherSubjectGroup.Group.GroupType)
+                .Include(t => t.TeacherSubjectGroup.Group.Grade)
                 .FirstOrDefaultAsync(m => m.TimetableId == id);
             if (timetables == null)
             {
@@ -101,7 +130,18 @@ namespace School._Distance_Learning.Controllers
             {
                 return NotFound();
             }
-            ViewData["TeacherSubjectGroupId"] = new SelectList(_context.TeacherSubjectGroup, "TeacherSubjectGroupId", "TeacherSubjectGroupId", timetables.TeacherSubjectGroupId);
+
+            ViewData["TeacherSubjectGroupId"] = new SelectList(_context.TeacherSubjectGroup
+                .Include(t => t.TeacherSubject)
+                .Include(t => t.TeacherSubject.Subject)
+                .Include(t => t.TeacherSubject.Teacher)
+                .Include(t => t.Group)
+                .Include(t => t.Group.GroupType)
+                .Include(t => t.Group.Grade),
+                "TeacherSubjectGroupId",
+                "TeacherSubjectGroupName",
+                timetables.TeacherSubjectGroupId); 
+            
             return View(timetables);
         }
 
@@ -137,7 +177,18 @@ namespace School._Distance_Learning.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TeacherSubjectGroupId"] = new SelectList(_context.TeacherSubjectGroup, "TeacherSubjectGroupId", "TeacherSubjectGroupId", timetables.TeacherSubjectGroupId);
+
+            ViewData["TeacherSubjectGroupId"] = new SelectList(_context.TeacherSubjectGroup
+                .Include(t => t.TeacherSubject)
+                .Include(t => t.TeacherSubject.Subject)
+                .Include(t => t.TeacherSubject.Teacher)
+                .Include(t => t.Group)
+                .Include(t => t.Group.GroupType)
+                .Include(t => t.Group.Grade),
+                "TeacherSubjectGroupId",
+                "TeacherSubjectGroupName",
+                timetables.TeacherSubjectGroupId); 
+            
             return View(timetables);
         }
 
@@ -151,6 +202,12 @@ namespace School._Distance_Learning.Controllers
 
             var timetables = await _context.Timetables
                 .Include(t => t.TeacherSubjectGroup)
+                .Include(t => t.TeacherSubjectGroup.TeacherSubject)
+                .Include(t => t.TeacherSubjectGroup.TeacherSubject.Subject)
+                .Include(t => t.TeacherSubjectGroup.TeacherSubject.Teacher)
+                .Include(t => t.TeacherSubjectGroup.Group)
+                .Include(t => t.TeacherSubjectGroup.Group.GroupType)
+                .Include(t => t.TeacherSubjectGroup.Group.Grade)
                 .FirstOrDefaultAsync(m => m.TimetableId == id);
             if (timetables == null)
             {
@@ -174,6 +231,42 @@ namespace School._Distance_Learning.Controllers
         private bool TimetablesExists(int id)
         {
             return _context.Timetables.Any(e => e.TimetableId == id);
+        }
+
+        [AcceptVerbs("Get", "Post")]
+        public IActionResult IsTimetableUnique(Timetables tt)
+        {
+            var curr = _context.TeacherSubjectGroup
+                .Include(t => t.TeacherSubject)
+                .Include(t => t.TeacherSubject.Subject)
+                .Include(t => t.TeacherSubject.Teacher)
+                .Include(t => t.Group)
+                .Include(t => t.Group.GroupType)
+                .Include(t => t.Group.Grade)
+                .Where(t => t.TeacherSubjectGroupId == tt.TeacherSubjectGroupId)
+                .FirstOrDefault();
+
+            if (_context.Timetables
+                .Include(t => t.TeacherSubjectGroup)
+                .Include(t => t.TeacherSubjectGroup.TeacherSubject)
+                .Include(t => t.TeacherSubjectGroup.TeacherSubject.Subject)
+                .Include(t => t.TeacherSubjectGroup.TeacherSubject.Teacher)
+                .Include(t => t.TeacherSubjectGroup.Group)
+                .Include(t => t.TeacherSubjectGroup.Group.GroupType)
+                .Include(t => t.TeacherSubjectGroup.Group.Grade)
+                .Any(t =>
+                t.WeekDayNumber == tt.WeekDayNumber &&
+                t.LessonNumber == tt.LessonNumber &&
+                (t.TeacherSubjectGroup.TeacherSubject.TeacherId == (curr.TeacherSubject.TeacherId) ||
+                t.TeacherSubjectGroup.Group.GradeId == (curr.Group.GradeId) &&
+                t.TeacherSubjectGroup.Group.GroupTypeId != (curr.Group.GroupTypeId) ||
+                t.TeacherSubjectGroup.GroupId == curr.GroupId) &&
+                (t.Oddness == 0 || t.Oddness + tt.Oddness != 3) &&
+                t.TimetableId != tt.TimetableId))
+            {
+                return Json(false);
+            }
+            return Json(true);
         }
     }
 }

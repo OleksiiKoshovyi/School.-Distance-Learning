@@ -17,7 +17,7 @@ namespace School._Distance_Learning.Models
 
         [Required]
         [Remote(action: "IsTeacherSubjectGroupUnique", controller: "TeacherSubjectGroups",
-            AdditionalFields = "GroupId",
+            AdditionalFields = "GroupId,TeacherSubject",
             ErrorMessage = "similar conformity already exists")]
         public int TeacherSubjectId { get; set; }
         public int GroupId { get; set; }
@@ -34,5 +34,10 @@ namespace School._Distance_Learning.Models
         public virtual TeacherSubject TeacherSubject { get; set; }
         public virtual ICollection<Homeworks> Homeworks { get; set; }
         public virtual ICollection<Timetables> Timetables { get; set; }
+
+        public override string ToString()
+        {
+            return TeacherSubjectGroupName; 
+        }
     }
 }

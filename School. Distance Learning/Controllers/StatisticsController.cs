@@ -88,7 +88,7 @@ namespace School._Distance_Learning.Controllers
                        + "FROM gradeSubject "
                        + "GROUP BY subjectid ";
 
-                    string realhours = "SELECT s.subjectid, SUM(homeworkid) AS hw FROM homeworks h "
+                    string realhours = "SELECT s.subjectid, COUNT(homeworkid) AS hw FROM homeworks h "
                         + "LEFT JOIN teacherSubjectGroup tsg ON tsg.teacherSubjectGroupId = h.teacherSubjectGroupId "
                         + "LEFT JOIN teachersubject ts ON ts.teachersubjectid = tsg.teachersubjectid "
                         + "LEFT JOIN subjects s ON ts.subjectid = s.subjectid "
@@ -111,8 +111,8 @@ namespace School._Distance_Learning.Controllers
                             var row = new SubjectWorkload
                             {
                                 SubjectName = reader.GetString(0),
-                                HomeworkHoursNumber = reader.GetInt32(1),
-                                TimetableHoursNumber = reader.GetInt32(2)
+                                TimetableHoursNumber = reader.GetInt32(1),
+                                HomeworkHoursNumber = reader.GetInt32(2)
                             };
                             subjectWorkloads.Add(row);
                         }
@@ -184,12 +184,16 @@ namespace School._Distance_Learning.Controllers
                 await conn3.OpenAsync();
                 using (var command = conn3.CreateCommand())
                 {
-                    // Добавить каждый месяц?
-                    string query =
-                        "SELECT FORMAT(dob, 'MMMM', 'en-US') as month, MONTH(dob) AS monthnumber, COUNT(pupilid) AS dobnumber " +
+                    string dobs = " SELECT MONTH(dob) AS monthnumber, COUNT(pupilid) AS dobnumber " +
                         "FROM pupils " +
-                        "GROUP BY FORMAT(dob, 'MMMM', 'en-US'), MONTH(dob) " +
-                        "ORDER BY MONTH(dob);";
+                        "GROUP BY MONTH(dob) ";
+
+                    string query =
+                        "SELECT number AS monthnumber, FORMAT(DateAdd( month , number, -1 ), 'MMMM', 'en-US') as month, COALESCE(r.dobnumber, 0) AS dobnumber " +
+                        "FROM master..spt_values " +
+                        $"LEFT JOIN({dobs}) AS r ON r.monthnumber = number " +
+                        "WHERE Type = 'P' and number between 1 and 12 " +
+                        "ORDER BY number";
                     command.CommandText = query;
                     DbDataReader reader = await command.ExecuteReaderAsync();
 
@@ -199,8 +203,8 @@ namespace School._Distance_Learning.Controllers
                         {
                             var row = new DobPerMonth
                             {
-                                Month = reader.GetString(0),
-                                DobNumber = reader.GetInt32(1)
+                                Month = reader.GetString(1),
+                                DobNumber = reader.GetInt32(2)
                             };
                             dobPerMonths.Add(row);
                         }

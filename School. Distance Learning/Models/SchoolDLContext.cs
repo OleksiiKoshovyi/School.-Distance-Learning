@@ -175,18 +175,23 @@ namespace School._Distance_Learning.Models
             modelBuilder.Entity<Homeworks>(entity =>
             {
                 entity.HasKey(e => e.HomeworkId)
-                    .HasName("PK__Homework__FDE46A72A2E4F1DA");
+                    .HasName("PK__Homework__FDE46A72023B2A12");
 
                 entity.HasIndex(e => new { e.PassDate, e.TeacherSubjectGroupId })
-                    .HasName("UQ__Homework__4170E12C3BEC7200")
+                    .HasName("UQ__Homework__4170E12CA8C0EBE4")
                     .IsUnique();
 
                 entity.Property(e => e.PassDate).HasColumnType("date");
 
+                entity.Property(e => e.Homework)
+                    .IsRequired()
+                    .HasMaxLength(250)
+                    .IsUnicode(false);
+
                 entity.HasOne(d => d.TeacherSubjectGroup)
                     .WithMany(p => p.Homeworks)
                     .HasForeignKey(d => d.TeacherSubjectGroupId)
-                    .HasConstraintName("FK__Homeworks__Teach__656C112C");
+                    .HasConstraintName("FK__Homeworks__Teach__17036CC0");
             });
 
             modelBuilder.Entity<Pupils>(entity =>
