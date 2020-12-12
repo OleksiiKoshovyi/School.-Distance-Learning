@@ -93,7 +93,8 @@ namespace School._Distance_Learning.ViewModels.Statistics
             {
                 if (TimetableHoursNumber != 0)
                 {
-                    return SkippingClassesNumber / TimetableHoursNumber;
+                    return (double)SkippingClassesNumber
+                        / (double)TimetableHoursNumber;
                 }
 
                 return 0;

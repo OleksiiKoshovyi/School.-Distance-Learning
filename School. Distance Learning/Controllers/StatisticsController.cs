@@ -134,11 +134,11 @@ namespace School._Distance_Learning.Controllers
                 await conn2.OpenAsync();
                 using (var command = conn2.CreateCommand())
                 {
-                    string skipping = "SELECT pupilid, SUM(skippingclassid) AS skippinghours "
+                    string skipping = "SELECT pupilid, COUNT(skippingclassid) AS skippinghours "
                        + "FROM skippingclasses "
                        + "GROUP BY pupilid ";
 
-                    string tthours = "SELECT gradeid, SUM(hoursnumber) AS tthours "
+                    string tthours = "SELECT gradeid, SUM(hoursnumber) * 7 AS tthours "
                         + "FROM gradesubject "
                         + "GROUP BY gradeid ";
 
