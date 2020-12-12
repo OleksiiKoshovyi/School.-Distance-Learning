@@ -14,19 +14,14 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="SkippingClassId" />
             <div class="form-group">
-                <label asp-for="TimetableId" class="control-label"></label>
-                <select asp-for="TimetableId" class="form-control" asp-items="ViewBag.TimetableId"></select>
-                <span asp-validation-for="TimetableId" class="text-danger"></span>
+                <label asp-for="SkippingDate" class="control-label"></label>
+                <input asp-for="SkippingDate" class="form-control" />
+                <span asp-validation-for="SkippingDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="PupilId" class="control-label"></label>
                 <select asp-for="PupilId" class="form-control" asp-items="ViewBag.PupilId"></select>
                 <span asp-validation-for="PupilId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="WeekNumber" class="control-label"></label>
-                <input asp-for="WeekNumber" class="form-control" />
-                <span asp-validation-for="WeekNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

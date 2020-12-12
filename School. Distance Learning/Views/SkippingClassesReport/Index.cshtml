@@ -1,0 +1,56 @@
+﻿@model School._Distance_Learning.ViewModels.SkippingClassesReport.IndexViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Timetable</h1>
+
+<form asp-action="Index" method="get" class="col-md-4">
+    <div class="form-actions no-color">
+        <p>
+            Timetable For:
+            @Html.DropDownList("gradeid", ViewBag.GradeId as SelectList,
+                htmlAttributes: new { @class = "form-control", @name = "Gradeid", @value = ViewData["CurrentGradeId"], @style = "block:inline" })
+            <input type="submit" value="Search" class="btn btn-default" />
+        </p>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                pupil \ date
+            </th>
+            @foreach (var item in Model.dates)
+            {
+            <th style="writing-mode:vertical-lr">
+                @item.Date.ToString("dd/MM/yyyy")
+            </th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < Model.pupils.Count(); ++i)
+        {
+            <tr>
+                <td>@Model.pupils[i].FullName</td>
+                @for (int j = 0; j < Model.classes[i].Count(); ++j)
+                {
+                    <td>
+                        @for (int k = 0; k < Model.classes[i][j].Count(); ++k)
+                        {
+                            <a asp-controller="SkippingClasses" asp-action="Details" asp-route-id="@Model.classes[i][j][k].SkippingClassId">
+                            ▼
+                            </a>
+                        }
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h6 style="text-align:right">
+    @DateTime.Now
+</h6>

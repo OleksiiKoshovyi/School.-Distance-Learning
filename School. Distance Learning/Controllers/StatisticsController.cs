@@ -162,7 +162,7 @@ namespace School._Distance_Learning.Controllers
                                 FullName = reader.GetString(0),
                                 GradeName = reader.GetString(1),
                                 SkippingClassesNumber = reader.GetInt32(2),
-                                TimetableHoursNumber = reader.GetInt32(3)
+                                TimetableHoursNumber = 39 * 5 /*reader.GetInt32(3)*/
                             };
                             turants.Add(row);
                         }

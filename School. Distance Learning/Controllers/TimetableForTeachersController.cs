@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,27 +9,27 @@ using School._Distance_Learning.Models;
 
 namespace School._Distance_Learning.Controllers
 {
-    public class TimetableForPupilsController : Controller
+    public class TimetableForTeachersController : Controller
     {
         private readonly SchoolDLContext _context;
 
-        public TimetableForPupilsController(SchoolDLContext context)
+        public TimetableForTeachersController(SchoolDLContext context)
         {
             _context = context;
         }
 
         // GET: TimetableForPupilsController
-        public ActionResult Index(int? gradeid)
+        public ActionResult Index(int? teacherid)
         {
-            if (gradeid == null)
+            if (teacherid == null)
             {
-                gradeid = _context.Grades.FirstOrDefault().GradeId;
+                teacherid = _context.TeachersInfo.FirstOrDefault().TeacherId;
             }
 
-            ViewData["GradeId"] = new SelectList(_context.GradesInfo,
-                "GradeId", "GradeName", gradeid);
+            ViewData["TeacherId"] = new SelectList(_context.TeachersInfo,
+                "TeacherId", "TeacherFullName", teacherid);
 
-            var tt =  _context.Timetables
+            var tt = _context.Timetables
                  .Include(t => t.TeacherSubjectGroup)
                  .Include(t => t.TeacherSubjectGroup.TeacherSubject)
                  .Include(t => t.TeacherSubjectGroup.TeacherSubject.Subject)
@@ -39,7 +37,7 @@ namespace School._Distance_Learning.Controllers
                  .Include(t => t.TeacherSubjectGroup.Group)
                  .Include(t => t.TeacherSubjectGroup.Group.GroupType)
                  .Include(t => t.TeacherSubjectGroup.Group.Grade)
-                 .Where(t => t.TeacherSubjectGroup.Group.GradeId == gradeid)
+                 .Where(t => t.TeacherSubjectGroup.TeacherSubject.TeacherId == teacherid)
                  .OrderBy(t => t.TeacherSubjectGroup.Group.GradeId)
                  .ThenBy(t => t.WeekDayNumber)
                  .ThenBy(t => t.LessonNumber)
@@ -68,16 +66,5 @@ namespace School._Distance_Learning.Controllers
             return View(lessons);
         }
 
-        public static Byte[] PdfSharpConvert(String html)
-        {
-            Byte[] res = null;
-            using (MemoryStream ms = new MemoryStream())
-            {
-                var pdf = TheArtOfDev.HtmlRenderer.PdfSharp.PdfGenerator.GeneratePdf(html, PdfSharp.PageSize.A4);
-                pdf.Save(ms);
-                res = ms.ToArray();
-            }
-            return res;
-        }
     }
 }

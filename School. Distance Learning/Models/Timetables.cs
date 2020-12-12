@@ -7,11 +7,6 @@ namespace School._Distance_Learning.Models
 {
     public partial class Timetables
     {
-        public Timetables()
-        {
-            SkippingClasses = new HashSet<SkippingClasses>();
-        }
-
         public int TimetableId { get; set; }
 
         [Required]
@@ -33,6 +28,5 @@ namespace School._Distance_Learning.Models
         public int TeacherSubjectGroupId { get; set; }
 
         public virtual TeacherSubjectGroup TeacherSubjectGroup { get; set; }
-        public virtual ICollection<SkippingClasses> SkippingClasses { get; set; }
     }
 }

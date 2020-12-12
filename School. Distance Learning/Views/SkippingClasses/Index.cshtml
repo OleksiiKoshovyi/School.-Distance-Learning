@@ -13,13 +13,10 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.WeekNumber)
+                @Html.DisplayNameFor(model => model.SkippingDate)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Pupil)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Timetable)
             </th>
             <th></th>
         </tr>
@@ -28,13 +25,10 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.WeekNumber)
+                @Html.DisplayFor(modelItem => item.SkippingDate)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Pupil.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Timetable.TimetableId)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.SkippingClassId">Edit</a> |

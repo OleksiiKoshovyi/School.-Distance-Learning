@@ -241,23 +241,17 @@ namespace School._Distance_Learning.Models
             modelBuilder.Entity<SkippingClasses>(entity =>
             {
                 entity.HasKey(e => e.SkippingClassId)
-                    .HasName("PK__Skipping__B39D316816945E65");
+                    .HasName("PK__Skipping__B39D31681FE0B8EE");
 
-                entity.HasIndex(e => new { e.TimetableId, e.PupilId, e.WeekNumber })
-                    .HasName("UQ__Skipping__85FD79D76EA32730")
+                entity.HasIndex(e => new { e.PupilId, e.SkippingDate })
+                    .HasName("UQ__Skipping__D5D0D57F460C9ABB")
                     .IsUnique();
 
                 entity.HasOne(d => d.Pupil)
                     .WithMany(p => p.SkippingClasses)
                     .HasForeignKey(d => d.PupilId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__SkippingC__Pupil__04E4BC85");
-
-                entity.HasOne(d => d.Timetable)
-                    .WithMany(p => p.SkippingClasses)
-                    .HasForeignKey(d => d.TimetableId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__SkippingC__Timet__03F0984C");
+                    .HasConstraintName("FK__SkippingC__Pupil__1AD3FDA4");
             });
 
             modelBuilder.Entity<Subjects>(entity =>

@@ -21,7 +21,7 @@ namespace School._Distance_Learning.Controllers
         // GET: SkippingClasses
         public async Task<IActionResult> Index()
         {
-            var schoolDLContext = _context.SkippingClasses.Include(s => s.Pupil).Include(s => s.Timetable);
+            var schoolDLContext = _context.SkippingClasses.Include(s => s.Pupil);
             return View(await schoolDLContext.ToListAsync());
         }
 
@@ -35,7 +35,6 @@ namespace School._Distance_Learning.Controllers
 
             var skippingClasses = await _context.SkippingClasses
                 .Include(s => s.Pupil)
-                .Include(s => s.Timetable)
                 .FirstOrDefaultAsync(m => m.SkippingClassId == id);
             if (skippingClasses == null)
             {
@@ -49,7 +48,6 @@ namespace School._Distance_Learning.Controllers
         public IActionResult Create()
         {
             ViewData["PupilId"] = new SelectList(_context.Pupils, "PupilId", "FirstName");
-            ViewData["TimetableId"] = new SelectList(_context.Timetables, "TimetableId", "TimetableId");
             return View();
         }
 
@@ -58,7 +56,7 @@ namespace School._Distance_Learning.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SkippingClassId,TimetableId,PupilId,WeekNumber")] SkippingClasses skippingClasses)
+        public async Task<IActionResult> Create([Bind("SkippingClassId,SkippingDate,PupilId")] SkippingClasses skippingClasses)
         {
             if (ModelState.IsValid)
             {
@@ -67,7 +65,6 @@ namespace School._Distance_Learning.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["PupilId"] = new SelectList(_context.Pupils, "PupilId", "FirstName", skippingClasses.PupilId);
-            ViewData["TimetableId"] = new SelectList(_context.Timetables, "TimetableId", "TimetableId", skippingClasses.TimetableId);
             return View(skippingClasses);
         }
 
@@ -85,7 +82,6 @@ namespace School._Distance_Learning.Controllers
                 return NotFound();
             }
             ViewData["PupilId"] = new SelectList(_context.Pupils, "PupilId", "FirstName", skippingClasses.PupilId);
-            ViewData["TimetableId"] = new SelectList(_context.Timetables, "TimetableId", "TimetableId", skippingClasses.TimetableId);
             return View(skippingClasses);
         }
 
@@ -94,7 +90,7 @@ namespace School._Distance_Learning.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SkippingClassId,TimetableId,PupilId,WeekNumber")] SkippingClasses skippingClasses)
+        public async Task<IActionResult> Edit(int id, [Bind("SkippingClassId,SkippingDate,PupilId")] SkippingClasses skippingClasses)
         {
             if (id != skippingClasses.SkippingClassId)
             {
@@ -122,7 +118,6 @@ namespace School._Distance_Learning.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["PupilId"] = new SelectList(_context.Pupils, "PupilId", "FirstName", skippingClasses.PupilId);
-            ViewData["TimetableId"] = new SelectList(_context.Timetables, "TimetableId", "TimetableId", skippingClasses.TimetableId);
             return View(skippingClasses);
         }
 
@@ -136,7 +131,6 @@ namespace School._Distance_Learning.Controllers
 
             var skippingClasses = await _context.SkippingClasses
                 .Include(s => s.Pupil)
-                .Include(s => s.Timetable)
                 .FirstOrDefaultAsync(m => m.SkippingClassId == id);
             if (skippingClasses == null)
             {
