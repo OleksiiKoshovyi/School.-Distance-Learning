@@ -22,6 +22,11 @@
                 <select asp-for="TeacherSubjectGroupId" class ="form-control" asp-items="ViewBag.TeacherSubjectGroupId"></select>
             </div>
             <div class="form-group">
+                <label asp-for="Homework" class="control-label"></label>
+                <input asp-for="Homework" class="form-control" />
+                <span asp-validation-for="Homework" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>

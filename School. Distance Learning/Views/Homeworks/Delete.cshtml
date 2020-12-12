@@ -18,10 +18,16 @@
             @Html.DisplayFor(model => model.PassDate)
         </dd>
         <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Homework)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Homework)
+        </dd>
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.TeacherSubjectGroup)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TeacherSubjectGroup.TeacherSubjectGroupId)
+            @Html.DisplayFor(model => model.TeacherSubjectGroup.TeacherSubjectGroupName)
         </dd class>
     </dl>
     

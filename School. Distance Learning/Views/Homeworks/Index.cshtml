@@ -16,6 +16,9 @@
                 @Html.DisplayNameFor(model => model.PassDate)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Homework)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.TeacherSubjectGroup)
             </th>
             <th></th>
@@ -28,7 +31,10 @@
                 @Html.DisplayFor(modelItem => item.PassDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TeacherSubjectGroup.TeacherSubjectGroupId)
+                @Html.DisplayFor(modelItem => item.Homework)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TeacherSubjectGroup.TeacherSubjectGroupName)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.HomeworkId">Edit</a> |
