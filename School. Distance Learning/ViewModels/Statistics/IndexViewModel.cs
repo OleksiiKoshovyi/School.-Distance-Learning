@@ -38,7 +38,7 @@ namespace School._Distance_Learning.ViewModels.Statistics
             {
                 if (WorkingHoursNumber != 0)
                 {
-                    return RealWorkingHoursNumber / WorkingHoursNumber;
+                    return (double)RealWorkingHoursNumber / (double)WorkingHoursNumber;
                 }
 
                 return 0;

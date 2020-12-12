@@ -38,20 +38,21 @@ namespace School._Distance_Learning.Controllers
                        + "FROM teacherSubject "
                        + "GROUP BY teacherid ";
 
-                    string realhours = "SELECT ts.teacherid, SUM(hoursnumber) AS realhours FROM teacherSubjectGroup tsg "
+                    string realhours = "SELECT ts.teacherid, SUM(gs.hoursnumber) AS realhours FROM teacherSubjectGroup tsg "
                         + "LEFT JOIN groups g ON g.groupid = tsg.groupid "
                         + "LEFT JOIN grades ON grades.gradeid = g.gradeid "
                         + "LEFT JOIN teachersubject ts ON ts.teachersubjectid = tsg.teachersubjectid "
+                        + "LEFT JOIN gradeSubject gs ON gs.gradeid = g.gradeid AND gs.SubjectId = ts.SubjectId "
                         + "LEFT JOIN teachers t ON ts.teacherid = t.teacherid "
                         + "GROUP BY ts.teacherid ";
                     
                     string query =
-                        "SELECT TOP(5) CONCAT(firstname, ' ',surname, ' ',patronymic) AS fullname, w.workinghours, r.realhours "
+                        "SELECT TOP(5) CONCAT(surname, ' ', firstname, ' ', patronymic) AS fullname, w.workinghours, r.realhours "
                         + "FROM teachers t "
                         +$"LEFT JOIN ({workinghours}) AS w ON w.teacherid = t.teacherid "
                         +$"LEFT JOIN ({realhours}) AS r ON r.teacherid = t.teacherid "
                         + "WHERE w.workinghours != 0 AND r.realhours IS NOT NULL "
-                        + "ORDER BY r.realhours / w.workinghours desc;";
+                        + "ORDER BY CAST(r.realhours AS Float) / w.workinghours desc;";
                     command.CommandText = query;
                     DbDataReader reader = await command.ExecuteReaderAsync();
 
@@ -99,7 +100,7 @@ namespace School._Distance_Learning.Controllers
                         + $"LEFT JOIN ({workinghours}) AS w ON w.subjectid = s.subjectid "
                         + $"LEFT JOIN ({realhours}) AS r ON r.subjectid = s.subjectid "
                         + "WHERE w.tt != 0 AND r.hw IS NOT NULL "
-                        + "ORDER BY r.hw / w.tt desc ;";
+                        + "ORDER BY CAST(r.hw AS Float) / w.tt desc ;";
                     command.CommandText = query;
                     DbDataReader reader = await command.ExecuteReaderAsync();
 
@@ -148,7 +149,7 @@ namespace School._Distance_Learning.Controllers
                         + $"LEFT JOIN ({skipping}) AS w ON w.pupilid = p.pupilid "
                         + $"LEFT JOIN ({tthours}) AS r ON r.gradeid = p.gradeid "
                         + "WHERE tthours != 0 AND skippinghours IS NOT NULL "
-                        + "ORDER BY (skippinghours / tthours) desc;";
+                        + "ORDER BY (CAST(skippinghours AS Float) / tthours) desc;";
                     command.CommandText = query;
                     DbDataReader reader = await command.ExecuteReaderAsync();
 
