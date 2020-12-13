@@ -1,69 +1,79 @@
-﻿@model List<List<List<Timetables>>>
+﻿@model School._Distance_Learning.ViewModels.TimetableForPupils.IndexViewModel
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Timetable</h1>
+<div id="report">
 
-<form asp-action="Index" method="get" class="col-md-4">
-    <div class="form-actions no-color">
-        <p>
-            Timetable For: 
-            @Html.DropDownList("gradeid", ViewBag.GradeId as SelectList,
-                htmlAttributes: new { @class = "form-control", @name = "Gradeid", @value = ViewData["CurrentGradeId"], @style="block:inline"})
-            <input type="submit" value="Search" class="btn btn-default" />
-        </p>
-    </div>
-</form>
+    <h1>Timetable</h1>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                № \ weekday
-            </th>
-            <th>
-                Monday
-            </th>
-            <th>
-                Tuesday
-            </th>
-            <th>
-                Wednesday
-            </th>
-            <th>
-                Thursday
-            </th>
-            <th>
-                Friday
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @for (int i = 0; i < Model.Count(); ++i)
-        {
+    <form asp-action="Index" method="get" class="col-md-4">
+        <div class="form-actions no-color">
+            <p>
+                Timetable For:
+                @Html.DropDownList("gradeid", ViewBag.GradeId as SelectList,
+                    htmlAttributes: new { @class = "form-control", @name = "Gradeid", @value = ViewData["CurrentGradeId"], @style = "block:inline" })
+                <input type="submit" value="Search" class="btn btn-default" />
+            </p>
+        </div>
+    </form>
+
+    <table class="table">
+        <thead>
             <tr>
-                <td>@(i+1)</td>
-                @for (int j = 0; j < Model[i].Count(); ++j)
-                {
-                    <td>
-                        @for (int k = 0; k < Model[i][j].Count(); ++k)
-                        {
-                            <a asp-controller="Timetables" asp-action="Details" asp-route-id="@Model[i][j][k].TimetableId">
-                                @Model[i][j][k].TeacherSubjectGroup.TeacherSubject.Subject.SubjectName
-                            </a>
-                            @if (Model[i][j].Count() > 1 && k != Model[i][j].Count() - 1)
-                            {
-                            <br>
-                            }
-                        }
-                    </td>
-                }
+                <th>
+                    № \ weekday
+                </th>
+                <th>
+                    Monday
+                </th>
+                <th>
+                    Tuesday
+                </th>
+                <th>
+                    Wednesday
+                </th>
+                <th>
+                    Thursday
+                </th>
+                <th>
+                    Friday
+                </th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.timetable.Count(); ++i)
+            {
+                <tr>
+                    <td>@(i+1)</td>
+                    @for (int j = 0; j < Model.timetable[i].Count(); ++j)
+                    {
+                        <td>
+                            @for (int k = 0; k < Model.timetable[i][j].Count(); ++k)
+                            {
+                                <a asp-controller="Timetables" asp-action="Details" asp-route-id="@Model.timetable[i][j][k].TimetableId">
+                                    @Model.timetable[i][j][k].TeacherSubjectGroup.TeacherSubject.Subject.SubjectName
+                                </a>
+                                @if (Model.timetable[i][j].Count() > 1 && k != Model.timetable[i][j].Count() - 1)
+                                {
+                                    <br>
+                                }
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
 
-<h6 style="text-align:right">
-    @DateTime.Now
-</h6>
+    <h6 style="text-align:right">
+        @Model.date
+    </h6>
+
+</div>
+
+
+<form asp-action="ExportCsv" asp-controller="TimetableForPupils" method="post">
+    <button class="btn btn-info" type="submit">Generate CSV</button>
+    <input type="hidden" name="gradeid" value="@Model.grade.GradeId" />
+</form>

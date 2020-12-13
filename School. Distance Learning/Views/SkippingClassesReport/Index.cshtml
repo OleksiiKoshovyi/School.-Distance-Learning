@@ -24,8 +24,10 @@
             </th>
             @foreach (var item in Model.dates)
             {
-            <th style="writing-mode:vertical-lr">
-                @item.Date.ToString("dd/MM/yyyy")
+            <th>
+                <div style="writing-mode:vertical-lr">
+                    @item.Date.ToString("dd/MM/yyyy")
+                </div>
             </th>
             }
         </tr>
@@ -54,3 +56,8 @@
 <h6 style="text-align:right">
     @DateTime.Now
 </h6>
+
+<form asp-action="ExportCsv" asp-controller="SkippingClassesReport" method="post">
+    <button class="btn btn-info" type="submit">Generate CSV</button>
+    <input type="hidden" name="gradeid" value="@Model.grade.GradeId" />
+</form>

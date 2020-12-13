@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using School._Distance_Learning.Models;
+using School._Distance_Learning.ViewModels.TimetableForPupils;
 
 namespace School._Distance_Learning.Controllers
 {
@@ -20,18 +22,14 @@ namespace School._Distance_Learning.Controllers
             _context = context;
         }
 
-        // GET: TimetableForPupilsController
-        public ActionResult Index(int? gradeid)
+        private IndexViewModel GetIndexViewModel(int gradeid)
         {
-            if (gradeid == null)
-            {
-                gradeid = _context.Grades.FirstOrDefault().GradeId;
-            }
+            Grades grade = _context.Grades
+                .Where(t => t.GradeId == gradeid)
+                .ToList()
+                .FirstOrDefault();
 
-            ViewData["GradeId"] = new SelectList(_context.GradesInfo,
-                "GradeId", "GradeName", gradeid);
-
-            var tt =  _context.Timetables
+            var tt = _context.Timetables
                  .Include(t => t.TeacherSubjectGroup)
                  .Include(t => t.TeacherSubjectGroup.TeacherSubject)
                  .Include(t => t.TeacherSubjectGroup.TeacherSubject.Subject)
@@ -65,19 +63,33 @@ namespace School._Distance_Learning.Controllers
                 lessons[lesson.LessonNumber - 1][lesson.WeekDayNumber - 1].Add(lesson);
             }
 
-            return View(lessons);
+            return new IndexViewModel(lessons, grade, DateTime.Now);
         }
 
-        public static Byte[] PdfSharpConvert(String html)
+        // GET: TimetableForPupilsController
+        public ActionResult Index(int? gradeid)
         {
-            Byte[] res = null;
-            using (MemoryStream ms = new MemoryStream())
+            if (gradeid == null)
             {
-                var pdf = TheArtOfDev.HtmlRenderer.PdfSharp.PdfGenerator.GeneratePdf(html, PdfSharp.PageSize.A4);
-                pdf.Save(ms);
-                res = ms.ToArray();
+                gradeid = _context.Grades.FirstOrDefault().GradeId;
             }
-            return res;
+
+            ViewData["GradeId"] = new SelectList(_context.GradesInfo,
+                "GradeId", "GradeName", gradeid);
+
+            return View(GetIndexViewModel((int)gradeid));
+        }
+
+        [HttpPost]
+        public FileResult ExportCsv(int gradeid)
+        {
+            IndexViewModel indexViewModel = GetIndexViewModel(gradeid);
+            return File(indexViewModel);
+        }
+
+        public virtual CsvResult File(IndexViewModel timetableData)
+        {
+            return new CsvResult(timetableData);
         }
     }
 }

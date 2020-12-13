@@ -1,4 +1,4 @@
-﻿@model List<List<List<Timetables>>>
+﻿@model School._Distance_Learning.ViewModels.TimetableForTeachers.IndexViewModel
 @{
     ViewData["Title"] = "Index";
 }
@@ -40,19 +40,19 @@
         </tr>
     </thead>
     <tbody>
-        @for (int i = 0; i < Model.Count(); ++i)
+        @for (int i = 0; i < Model.timetable.Count(); ++i)
         {
             <tr>
                 <td>@(i+1)</td>
-                @for (int j = 0; j < Model[i].Count(); ++j)
+                @for (int j = 0; j < Model.timetable[i].Count(); ++j)
                 {
                     <td>
-                        @for (int k = 0; k < Model[i][j].Count(); ++k)
+                        @for (int k = 0; k < Model.timetable[i][j].Count(); ++k)
                         {
-                        <a asp-controller="Timetables" asp-action="Details" asp-route-id="@Model[i][j][k].TimetableId">
-                            @Model[i][j][k].TeacherSubjectGroup.Group.Grade.GradeName : @Model[i][j][k].TeacherSubjectGroup.TeacherSubject.Subject.SubjectName
+                        <a asp-controller="Timetables" asp-action="Details" asp-route-id="@Model.timetable[i][j][k].TimetableId">
+                            @Model.timetable[i][j][k].TeacherSubjectGroup.Group.Grade.GradeName : @Model.timetable[i][j][k].TeacherSubjectGroup.TeacherSubject.Subject.SubjectName
                         </a>
-                            @if (Model[i][j].Count() > 1 && k != Model[i][j].Count() - 1)
+                            @if (Model.timetable[i][j].Count() > 1 && k != Model.timetable[i][j].Count() - 1)
                             {
                                 <br>
                             }
@@ -67,3 +67,8 @@
 <h6 style="text-align:right">
     @DateTime.Now
 </h6>
+
+<form asp-action="ExportCsv" asp-controller="TimetableForTeachers" method="post">
+    <button class="btn btn-info" type="submit">Generate CSV</button>
+    <input type="hidden" name="teacherid" value="@Model.teacher.TeacherId" />
+</form>

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using School._Distance_Learning.Models;
+using School._Distance_Learning.ViewModels.TimetableForTeachers;
 
 namespace School._Distance_Learning.Controllers
 {
@@ -18,17 +19,8 @@ namespace School._Distance_Learning.Controllers
             _context = context;
         }
 
-        // GET: TimetableForPupilsController
-        public ActionResult Index(int? teacherid)
+        private IndexViewModel GetIndexViewModel(int teacherid)
         {
-            if (teacherid == null)
-            {
-                teacherid = _context.TeachersInfo.FirstOrDefault().TeacherId;
-            }
-
-            ViewData["TeacherId"] = new SelectList(_context.TeachersInfo,
-                "TeacherId", "TeacherFullName", teacherid);
-
             var tt = _context.Timetables
                  .Include(t => t.TeacherSubjectGroup)
                  .Include(t => t.TeacherSubjectGroup.TeacherSubject)
@@ -43,6 +35,11 @@ namespace School._Distance_Learning.Controllers
                  .ThenBy(t => t.LessonNumber)
                  .ThenBy(t => t.TeacherSubjectGroup.GroupId)
                  .ToList();
+
+            Teachers teacher = _context.Teachers
+                .Where(t => t.TeacherId == teacherid)
+                .ToList()
+                .FirstOrDefault();
 
             int maxLessonNumber = tt.Select(t => t.LessonNumber).DefaultIfEmpty().Max();
 
@@ -63,7 +60,33 @@ namespace School._Distance_Learning.Controllers
                 lessons[lesson.LessonNumber - 1][lesson.WeekDayNumber - 1].Add(lesson);
             }
 
-            return View(lessons);
+            return new IndexViewModel(lessons, teacher, DateTime.Now);
+        }
+
+        // GET: TimetableForPupilsController
+        public ActionResult Index(int? teacherid)
+        {
+            if (teacherid == null)
+            {
+                teacherid = _context.Teachers.FirstOrDefault().TeacherId;
+            }
+
+            ViewData["TeacherId"] = new SelectList(_context.TeachersInfo,
+                "TeacherId", "TeacherFullName", teacherid);
+
+            return View(GetIndexViewModel((int)teacherid));
+        }
+
+        [HttpPost]
+        public FileResult ExportCsv(int teacherid)
+        {
+            IndexViewModel indexViewModel = GetIndexViewModel(teacherid);
+            return File(indexViewModel);
+        }
+
+        public virtual CsvResult File(IndexViewModel timetableData)
+        {
+            return new CsvResult(timetableData);
         }
 
     }

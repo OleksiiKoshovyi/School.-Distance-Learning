@@ -19,25 +19,8 @@ namespace School._Distance_Learning.Controllers
             _context = context;
         }
 
-        // GET: TimetableForPupilsController
-        public ActionResult Index(int? gradeid, int? subjectid)
+        private IndexViewModel GetIndexViewModel(int? gradeid)
         {
-            if (gradeid == null)
-            {
-                gradeid = _context.Grades.FirstOrDefault().GradeId;
-            }
-
-            if (gradeid == null)
-            {
-                gradeid = _context.GradeSubject
-                    .Where(gs => gs.GradeId == gradeid)
-                    .FirstOrDefault()
-                    .SubjectId;
-            }
-
-            ViewData["GradeId"] = new SelectList(_context.GradesInfo,
-                "GradeId", "GradeName", gradeid);
-
             var tt = _context.SkippingClasses
                  .Include(t => t.Pupil)
                  .Where(t => t.Pupil.GradeId == gradeid)
@@ -77,7 +60,43 @@ namespace School._Distance_Learning.Controllers
                     lessons[pupils.IndexOf(cl.Pupil)][(int)cl.SkippingDate.DayOfWeek].Add(cl);
             }
 
-            return View(new IndexViewModel(pupils, dates, lessons));
+            Grades grade = _context.Grades.Where(g => g.GradeId == gradeid).FirstOrDefault();
+
+            return new IndexViewModel(pupils, dates, grade, lessons);
+        }
+
+        // GET: TimetableForPupilsController
+        public ActionResult Index(int? gradeid)
+        {
+            if (gradeid == null)
+            {
+                gradeid = _context.Grades.FirstOrDefault().GradeId;
+            }
+
+            if (gradeid == null)
+            {
+                gradeid = _context.GradeSubject
+                    .Where(gs => gs.GradeId == gradeid)
+                    .FirstOrDefault()
+                    .SubjectId;
+            }
+
+            ViewData["GradeId"] = new SelectList(_context.GradesInfo,
+                "GradeId", "GradeName", gradeid);
+
+            return View(GetIndexViewModel(gradeid));
+        }
+
+        [HttpPost]
+        public FileResult ExportCsv(int gradeid)
+        {
+            IndexViewModel indexViewModel = GetIndexViewModel(gradeid);
+            return File(indexViewModel);
+        }
+
+        public virtual CsvResult File(IndexViewModel timetableData)
+        {
+            return new CsvResult(timetableData);
         }
     }
 }

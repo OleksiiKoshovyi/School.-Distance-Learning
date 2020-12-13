@@ -30,7 +30,7 @@
             <input class="form-control" type="date" name="DobEnd" value="@ViewData["CurrentFilterDobEnd"]" /><br>
             Login: <input class="form-control" type="text" name="Login" value="@ViewData["CurrentFilterLogin"]" /><br>
             Grade:
-            @Html.DropDownList("grade", ViewBag.GradeId as SelectList, "-- Select One --",
+            @Html.DropDownList("gradeid", ViewBag.GradeId as SelectList, "-- Select One --",
                 htmlAttributes: new { @class = "form-control", @name = "Gradeid", @value = ViewData["CurrentFilterGradeId"] })
             <br>
             <input type="submit" value="Filter" class="btn btn-default" /> |
