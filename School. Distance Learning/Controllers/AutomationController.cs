@@ -61,16 +61,16 @@ namespace School._Distance_Learning.Controllers
             return true;
         }
 
-        private void SetPartTimetable(List<List<List<List<TeacherSubjectGroup>>>> timetables,
+        private int SetPartTimetable(List<List<List<List<TeacherSubjectGroup>>>> timetables,
             int gradeIndex, int hoursNumber,
             List<TeacherSubjectGroup> currentTeacherSubjectGroups,
-            Random random, int maxHoursPerDay)
+            Random random, int maxHoursPerDay, int mask = 0)
         {
             // true if visited
             List<bool> visitedDays = new List<bool>(5);
             for (int i = 0; i < 5; i++)
             {
-                visitedDays.Add(false);
+                visitedDays.Add(false || (mask & (1 << i)) != 0);
             }
 
             List<Teachers> teachers = 
@@ -99,6 +99,7 @@ namespace School._Distance_Learning.Controllers
                     {
                         visitedDays[i] = false;
                     }
+                    mask = 0;
                     continue;
                 }
 
@@ -111,6 +112,7 @@ namespace School._Distance_Learning.Controllers
                             timetables[gradeIndex][lnum][day].Add(curr);
                         }
                         visitedDays[day] = true;
+                        mask += (1 << day);
                         break;
                     }
                     else
@@ -127,6 +129,8 @@ namespace School._Distance_Learning.Controllers
 
                 hoursNumber -= 1;
             }
+
+            return mask;
         }
 
         public async Task<IActionResult> IndexAsync()
@@ -243,15 +247,15 @@ namespace School._Distance_Learning.Controllers
                     List<TeacherSubjectGroup> firstSet = new List<TeacherSubjectGroup> { currentTypeGroup[0], currentTypeGroup[3] };
                     List<TeacherSubjectGroup> secondSet = new List<TeacherSubjectGroup> { currentTypeGroup[1], currentTypeGroup[2] };
 
-                    SetPartTimetable(timetables, gradeIndex, minHoursNumber, firstSet, random, 7);        
-                    SetPartTimetable(timetables, gradeIndex, minHoursNumber, secondSet, random, 7);
+                    int mask = SetPartTimetable(timetables, gradeIndex, minHoursNumber, firstSet, random, 7);        
+                    mask = SetPartTimetable(timetables, gradeIndex, minHoursNumber, secondSet, random, 7, mask);
 
                     // Same Subjects
                     firstSet = new List<TeacherSubjectGroup> { currentTypeGroup[0], currentTypeGroup[1] };
                     secondSet = new List<TeacherSubjectGroup> { currentTypeGroup[2], currentTypeGroup[3] };
 
-                    SetPartTimetable(timetables, gradeIndex, firstTime - minHoursNumber, firstSet, random, 7);
-                    SetPartTimetable(timetables, gradeIndex, secondTime - minHoursNumber, secondSet, random, 7);
+                    mask = SetPartTimetable(timetables, gradeIndex, firstTime - minHoursNumber, firstSet, random, 7, mask);
+                    mask = SetPartTimetable(timetables, gradeIndex, secondTime - minHoursNumber, secondSet, random, 7, mask);
                 }
                 
             }
