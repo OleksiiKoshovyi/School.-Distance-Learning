@@ -1,0 +1,67 @@
+﻿@model School._Distance_Learning.ViewModels.Automation.IndexViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Automation</h1>
+
+@foreach (var timetable in Model.timetables)
+{
+    <p>
+        @timetable.grade.GradeName
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    № \ weekday
+                </th>
+                <th>
+                    Monday
+                </th>
+                <th>
+                    Tuesday
+                </th>
+                <th>
+                    Wednesday
+                </th>
+                <th>
+                    Thursday
+                </th>
+                <th>
+                    Friday
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < timetable.timetable.Count(); ++i)
+            {
+                <tr>
+                    <td>@(i + 1)</td>
+                    @for (int j = 0; j < timetable.timetable[i].Count(); ++j)
+                    {
+                <td>
+                    @for (int k = 0; k < timetable.timetable[i][j].Count(); ++k)
+                    {
+                        @timetable.timetable[i][j][k].TeacherSubject.Subject.SubjectName
+                        @if (timetable.timetable[i][j].Count() > 1)
+                        {
+                            <br>
+                            @(new string($"({timetable.timetable[i][j][k].Group.GroupId}) {timetable.timetable[i][j][k].TeacherSubject.Teacher.PartName}"))
+                        }
+
+                        @if (timetable.timetable[i][j].Count() > 1 && k != timetable.timetable[i][j].Count() - 1)
+                        {
+                            <br>
+                        }
+                    }
+                </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<h6 style="text-align:right">
+    @Model.generationTime
+</h6>

@@ -1,0 +1,62 @@
+﻿@model IEnumerable<School._Distance_Learning.ViewModels.TimetableForGrades.IndexViewModel>
+@{
+    ViewData["Title"] = "Index";
+}
+
+    <h1>Timetable</h1>
+
+    @foreach (var gradeTT in Model) {
+        <p>
+            @gradeTT.grade.GradeName
+        </p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        № \ weekday
+                    </th>
+                    <th>
+                        Monday
+                    </th>
+                    <th>
+                        Tuesday
+                    </th>
+                    <th>
+                        Wednesday
+                    </th>
+                    <th>
+                        Thursday
+                    </th>
+                    <th>
+                        Friday
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < gradeTT.timetable.Count(); ++i)
+                {
+                    <tr>
+                        <td>@(i + 1)</td>
+                        @for (int j = 0; j < gradeTT.timetable[i].Count(); ++j)
+                        {
+                            <td>
+                                @for (int k = 0; k < gradeTT.timetable[i][j].Count(); ++k)
+                                {
+                                    <a asp-controller="Timetables" asp-action="Details" asp-route-id="@gradeTT.timetable[i][j][k].TimetableId">
+                                        @gradeTT.timetable[i][j][k].TeacherSubjectGroup.TeacherSubject.Subject.SubjectName
+                                    </a>
+                                    @if (gradeTT.timetable[i][j].Count() > 1 && k != gradeTT.timetable[i][j].Count() - 1)
+                                    {
+                                        <br>
+                                    }
+                                }
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+}
+        <h6 style="text-align:right">
+            @DateTime.Now
+        </h6>
