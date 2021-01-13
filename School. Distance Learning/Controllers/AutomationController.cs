@@ -80,11 +80,19 @@ namespace School._Distance_Learning.Controllers
 
             int maxPosition = maxHoursPerDay * 5;
 
+            int prevDay = random.Next(0, maxPosition) / maxHoursPerDay % 5;
+
             while (hoursNumber != 0)
             {
                 int position = random.Next(0, maxPosition);
                 int day = position / maxHoursPerDay % 5;
                 int lnum = (position - day * maxHoursPerDay) % maxHoursPerDay;
+
+                // Jumping optimization
+                if (hoursNumber == 1)
+                {
+                    day = (prevDay + 2 + position % 2) % 5;
+                }
 
                 // Check visited days
                 for (int i = 0; i < 5 && visitedDays[day]; i++)
@@ -113,6 +121,7 @@ namespace School._Distance_Learning.Controllers
                         }
                         visitedDays[day] = true;
                         mask += (1 << day);
+                        prevDay = day;
                         break;
                     }
                     else
