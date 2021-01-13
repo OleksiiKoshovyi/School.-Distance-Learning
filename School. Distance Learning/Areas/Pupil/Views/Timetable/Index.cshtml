@@ -1,0 +1,79 @@
+﻿@model School._Distance_Learning.Areas.Pupil.ViewModels.Timetable.IndexViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div id="report">
+
+    <h1>Timetable</h1>
+
+    <form asp-action="Index" method="get" class="col-md-4">
+        <div class="form-actions no-color">
+            <p>
+                Timetable For:
+                @Html.DropDownList("pupilid", ViewBag.PupilId as SelectList,
+                    htmlAttributes: new { @class = "form-control", @name = "PupilId", @value = ViewData["CurrentPupilId"], @style = "block:inline" })
+                <input type="submit" value="Search" class="btn btn-default" />
+            </p>
+        </div>
+    </form>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    № \ weekday
+                </th>
+                <th>
+                    Monday
+                </th>
+                <th>
+                    Tuesday
+                </th>
+                <th>
+                    Wednesday
+                </th>
+                <th>
+                    Thursday
+                </th>
+                <th>
+                    Friday
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.timetable.Count(); ++i)
+            {
+                <tr>
+                    <td>@(i+1)</td>
+                    @for (int j = 0; j < Model.timetable[i].Count(); ++j)
+                    {
+                        <td>
+                            @for (int k = 0; k < Model.timetable[i][j].Count(); ++k)
+                            {
+                                <a asp-area="" asp-controller="Timetables" asp-action="Details" asp-route-id="@Model.timetable[i][j][k].TimetableId">
+                                    @Model.timetable[i][j][k].TeacherSubjectGroup.TeacherSubject.Subject.SubjectName
+                                </a>
+                                @if (Model.timetable[i][j].Count() > 1 && k != Model.timetable[i][j].Count() - 1)
+                                {
+                                    <br>
+                                }
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h6 style="text-align:right">
+        @Model.date
+    </h6>
+
+</div>
+
+
+<form asp-action="ExportCsv" asp-controller="TimetableForPupils" method="post">
+    <button class="btn btn-info" type="submit">Generate CSV</button>
+    <input type="hidden" name="gradeid" value="@Model.pupil.PupilId" />
+</form>
