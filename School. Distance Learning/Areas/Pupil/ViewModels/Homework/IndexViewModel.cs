@@ -12,10 +12,10 @@ namespace School._Distance_Learning.Areas.Pupil.ViewModels.Homework
         public int? homeworkId;
         public int lessonNumber;
         public string subject;
-        public string? homework;
+        public string homework;
 
         public IndexViewModel(int timetableId, int teacherSubjectGroupId, int? homeworkId,
-            int lessonNumber, string subject, string? homework)
+            int lessonNumber, string subject, string homework)
         {
             this.timetableId = timetableId;
             this.teacherSubjectGroupId = teacherSubjectGroupId;

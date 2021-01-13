@@ -144,7 +144,7 @@ namespace School._Distance_Learning.Areas.Pupil.Controllers
                             if (!reader.IsDBNull(2))
                             {
                                row.homeworkId = reader.GetInt32(2);
-                                row.homework = reader.GetString(5);
+                               row.homework = reader.GetString(5);
                             }
                             homework.Add(row);
                         }
