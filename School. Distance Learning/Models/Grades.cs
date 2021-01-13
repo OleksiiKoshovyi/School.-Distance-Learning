@@ -18,14 +18,14 @@ namespace School._Distance_Learning.Models
 
         [Required]
         [Remote(action: "IsGradeUnique", controller: "Grades",
-            AdditionalFields = "Letter",
+            AdditionalFields = "Letter,GradeId",
             ErrorMessage = "a grade with the same first year and a letter already exists")]
         public int FirstYear { get; set; }
 
         [Required]
         [StringLength(1, MinimumLength = 1)]
         [Remote(action: "IsGradeUnique", controller: "Grades",
-            AdditionalFields = "FirstYear",
+            AdditionalFields = "FirstYear,GradeId",
             ErrorMessage = "a grade with the same first year and a letter already exists")]
         public string Letter { get; set; }
 
