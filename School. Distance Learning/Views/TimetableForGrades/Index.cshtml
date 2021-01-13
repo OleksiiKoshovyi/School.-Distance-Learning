@@ -12,7 +12,7 @@
             <p>
                 Timetable For:
                 @Html.DropDownList("gradeid", ViewBag.GradeId as SelectList,
-                    htmlAttributes: new { @class = "form-control", @name = "Gradeid", @value = ViewData["CurrentGradeId"], @style = "block:inline" })
+                    htmlAttributes: new { @class = "form-control", @name = "GradeId", @value = ViewData["CurrentGradeId"], @style = "block:inline" })
                 <input type="submit" value="Search" class="btn btn-default" />
             </p>
         </div>
