@@ -66,6 +66,11 @@ namespace School._Distance_Learning.Models
             return ((Pupils)obj).PupilId == PupilId;
         }
 
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(PupilId);
+        }
+
         public virtual Grades Grade { get; set; }
         public virtual ICollection<GroupPupil> GroupPupil { get; set; }
         public virtual ICollection<SkippingClasses> SkippingClasses { get; set; }

@@ -39,6 +39,16 @@ namespace School._Distance_Learning.Models
             }     
         }
 
+        public override bool Equals(object obj)
+        {
+            return ((Groups)obj).GroupId == GroupId;
+        }
+
+        public override int GetHashCode()
+        {
+            return GroupId;
+        }
+
         public virtual Grades Grade { get; set; }
         public virtual GroupTypes GroupType { get; set; }
         public virtual ICollection<GroupPupil> GroupPupil { get; set; }
