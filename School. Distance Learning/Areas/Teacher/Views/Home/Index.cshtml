@@ -1,0 +1,28 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Teacher Panel</h1>
+</div>
+
+
+<table class="table">
+    <tbody>
+        <tr>
+            <td>
+                <a class="nav-link text-dark" asp-area="Teacher" asp-controller="Homework" asp-action="Index">Homework</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a class="nav-link text-dark" asp-area="" asp-controller="TimetableForTeachers" asp-action="Index">Timetable</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a class="nav-link text-dark" asp-area="" asp-controller="SkippingClassesReport" asp-action="Index">SkippingClasses</a>
+            </td>
+        </tr>
+    </tbody>
+</table>

@@ -1,0 +1,64 @@
+﻿@model IEnumerable<School._Distance_Learning.Areas.Teacher.ViewModels.Homework.IndexViewModel>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div id="report">
+
+    <h1>Homework</h1>
+
+    <form asp-action="Index" method="get" class="col-md-4">
+        <div class="form-actions no-color">
+            <p>
+                Homework For:
+                @Html.DropDownList("teacherid", ViewBag.TeacherId as SelectList,
+                    htmlAttributes: new { @class = "form-control", @name = "TeacherId", @value = ViewData["CurrentTeacherId"], @style = "block:inline" })
+                <input class="form-control" type="date" name="Date" value="@ViewData["CurrentFilterDate"]" />
+                <input type="submit" value="Search" class="btn btn-default" />
+            </p>
+        </div>
+    </form>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Lesson number
+                </th>
+                <th>
+                    Grade
+                </th>
+                <th>
+                    Subject
+                </th>
+                <th>
+                    Homework
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var homewrok in Model)
+            {
+            <tr>
+                <td>
+                    @(homewrok.lessonNumber)
+                </td>
+                <td>
+                    @(homewrok.grade)
+                </td>
+                <td>
+                    @(homewrok.subject)
+                </td>
+                <td>
+                    @if (@homewrok.homeworkId != null)
+                    {
+                        <a asp-area="" asp-controller="Homeworks" asp-action="Details" asp-route-id="@homewrok.homeworkId">
+                            @(homewrok.homework)
+                        </a>
+                    }
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
