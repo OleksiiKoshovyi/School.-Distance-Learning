@@ -87,7 +87,7 @@ namespace School._Distance_Learning.Controllers
                 int lnum = (position - day * maxHoursPerDay) % maxHoursPerDay;
 
                 // Check visited days
-                for (int i = 0; visitedDays[day]; i++)
+                for (int i = 0; i < 5 && visitedDays[day]; i++)
                 {
                     day = (day + 1) % 5;
                 }
@@ -110,6 +110,7 @@ namespace School._Distance_Learning.Controllers
                         {
                             timetables[gradeIndex][lnum][day].Add(curr);
                         }
+                        visitedDays[day] = true;
                         break;
                     }
                     else
