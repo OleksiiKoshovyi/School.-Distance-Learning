@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace School._Distance_Learning.ViewModels.TimetableForPupils
+namespace School._Distance_Learning.ViewModels.TimetableForGrades
 {
     public class IndexViewModel
     {
@@ -13,7 +13,8 @@ namespace School._Distance_Learning.ViewModels.TimetableForPupils
         public DateTime date = DateTime.Now;
 
         public IndexViewModel(List<List<List<Timetables>>> tt,
-            Grades g, DateTime d)
+            Grades g,
+            DateTime d)
         {
             timetable = tt;
             grade = g;

@@ -23,6 +23,13 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Areas\Pupils\Controllers\" />
+    <Folder Include="Areas\Pupils\Data\" />
+    <Folder Include="Areas\Pupils\Models\" />
+    <Folder Include="Areas\Pupils\Views\" />
+  </ItemGroup>
+
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <TypeScriptTarget>ES5</TypeScriptTarget>
     <TypeScriptJSXEmit>React</TypeScriptJSXEmit>

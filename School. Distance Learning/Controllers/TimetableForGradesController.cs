@@ -9,15 +9,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using School._Distance_Learning.Models;
-using School._Distance_Learning.ViewModels.TimetableForPupils;
+using School._Distance_Learning.ViewModels.TimetableForGrades;
 
 namespace School._Distance_Learning.Controllers
 {
-    public class TimetableForPupilsController : Controller
+    public class TimetableForGradesController : Controller
     {
         private readonly SchoolDLContext _context;
 
-        public TimetableForPupilsController(SchoolDLContext context)
+        public TimetableForGradesController(SchoolDLContext context)
         {
             _context = context;
         }

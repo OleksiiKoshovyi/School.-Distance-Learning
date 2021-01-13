@@ -64,6 +64,7 @@ namespace School._Distance_Learning.Controllers
             return View(grades);
         }
 
+        
         // GET: Grades/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -114,7 +115,8 @@ namespace School._Distance_Learning.Controllers
             }
             return View(grades);
         }
-
+        
+        /*
         // GET: Grades/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -143,6 +145,7 @@ namespace School._Distance_Learning.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        */
 
         private bool GradesExists(int id)
         {
