@@ -24,10 +24,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Pupils\Controllers\" />
-    <Folder Include="Areas\Pupils\Data\" />
-    <Folder Include="Areas\Pupils\Models\" />
-    <Folder Include="Areas\Pupils\Views\" />
+    <Folder Include="Areas\Pupil\Data\" />
+    <Folder Include="Areas\Pupil\Models\" />
   </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
