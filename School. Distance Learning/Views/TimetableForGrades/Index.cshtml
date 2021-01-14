@@ -73,7 +73,7 @@
 </div>
 
 
-<form asp-action="ExportCsv" asp-controller="TimetableForPupils" method="post">
+<form asp-action="ExportCsv" asp-controller="TimetableForGrades" method="post">
     <button class="btn btn-info" type="submit">Generate CSV</button>
     <input type="hidden" name="gradeid" value="@Model.grade.GradeId" />
 </form>
