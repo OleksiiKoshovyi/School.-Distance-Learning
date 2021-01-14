@@ -64,7 +64,7 @@ namespace School._Distance_Learning.Controllers
                 sortOrder = "SurName";
             }
 
-            ViewData["SurNameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "SurName_desc" : "";
+            ViewData["SurNameSortParm"] = sortOrder == "SurName" ? "SurName_desc" : "SurName";
             ViewData["FirstNameSortParm"] = sortOrder == "FirstName" ? "FirstName_desc" : "FirstName";
             ViewData["PatronymicSortParm"] = sortOrder == "Patronymic" ? "Patronymic_desc" : "Patronymic";
             ViewData["DobSortParm"] = sortOrder == "Dob" ? "Dob_desc" : "Dob";
