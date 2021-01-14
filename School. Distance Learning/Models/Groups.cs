@@ -28,7 +28,7 @@ namespace School._Distance_Learning.Models
                 }
                 else 
                 {
-                    return Grade.GradeName;
+                    return Grade?.GradeName ?? "";
                 }
 
                 /*List<string> names = new List<string>();
