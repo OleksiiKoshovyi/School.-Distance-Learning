@@ -21,7 +21,9 @@ namespace School._Distance_Learning.Controllers
         // GET: GradeSubjects
         public async Task<IActionResult> Index()
         {
-            var schoolDLContext = _context.GradeSubject.Include(g => g.Grade).Include(g => g.Subject);
+            var schoolDLContext = _context.GradeSubject
+                .Include(g => g.Grade)
+                .Include(g => g.Subject);
             return View(await schoolDLContext.ToListAsync());
         }
 
@@ -37,6 +39,7 @@ namespace School._Distance_Learning.Controllers
                 .Include(g => g.Grade)
                 .Include(g => g.Subject)
                 .FirstOrDefaultAsync(m => m.GradeSubjectId == id);
+
             if (gradeSubject == null)
             {
                 return NotFound();
@@ -48,7 +51,7 @@ namespace School._Distance_Learning.Controllers
         // GET: GradeSubjects/Create
         public IActionResult Create()
         {
-            ViewData["GradeId"] = new SelectList(_context.Grades, "GradeId", "Letter");
+            ViewData["GradeId"] = new SelectList(_context.GradesInfo, "GradeId", "GradeName");
             ViewData["SubjectId"] = new SelectList(_context.Subjects, "SubjectId", "SubjectName");
             return View();
         }
@@ -66,7 +69,7 @@ namespace School._Distance_Learning.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GradeId"] = new SelectList(_context.Grades, "GradeId", "Letter", gradeSubject.GradeId);
+            ViewData["GradeId"] = new SelectList(_context.GradesInfo, "GradeId", "GradeName", gradeSubject.GradeId);
             ViewData["SubjectId"] = new SelectList(_context.Subjects, "SubjectId", "SubjectName", gradeSubject.SubjectId);
             return View(gradeSubject);
         }
@@ -84,7 +87,7 @@ namespace School._Distance_Learning.Controllers
             {
                 return NotFound();
             }
-            ViewData["GradeId"] = new SelectList(_context.Grades, "GradeId", "Letter", gradeSubject.GradeId);
+            ViewData["GradeId"] = new SelectList(_context.GradesInfo, "GradeId", "GradeName", gradeSubject.GradeId);
             ViewData["SubjectId"] = new SelectList(_context.Subjects, "SubjectId", "SubjectName", gradeSubject.SubjectId);
             return View(gradeSubject);
         }
@@ -121,7 +124,7 @@ namespace School._Distance_Learning.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GradeId"] = new SelectList(_context.Grades, "GradeId", "Letter", gradeSubject.GradeId);
+            ViewData["GradeId"] = new SelectList(_context.GradesInfo, "GradeId", "GradeName", gradeSubject.GradeId);
             ViewData["SubjectId"] = new SelectList(_context.Subjects, "SubjectId", "SubjectName", gradeSubject.SubjectId);
             return View(gradeSubject);
         }

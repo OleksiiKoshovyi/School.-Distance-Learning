@@ -41,6 +41,7 @@ namespace School._Distance_Learning.Controllers
                 .Include(t => t.Subject)
                 .Include(t => t.Teacher)
                 .FirstOrDefaultAsync(m => m.TeacherSubjectId == id);
+
             if (teacherSubject == null)
             {
                 return NotFound();
