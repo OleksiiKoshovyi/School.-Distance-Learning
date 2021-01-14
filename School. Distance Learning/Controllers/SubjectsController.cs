@@ -27,7 +27,7 @@ namespace School._Distance_Learning.Controllers
     int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
-            ViewData["SubjectNameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "SubjectName_desc" : "";
+            ViewData["SubjectNameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "SubjectName_desc" : "";
             ViewData["ComplexitySortParm"] = sortOrder == "Complexity" ? "Complexity_desc" : "Complexity";
 
             if (searchString != null)
@@ -84,7 +84,10 @@ namespace School._Distance_Learning.Controllers
             }
 
             var subjects = await _context.Subjects
+                .Include(t => t.TeacherSubject)
+                .ThenInclude(ts => ts.Teacher)
                 .FirstOrDefaultAsync(m => m.SubjectId == id);
+
             if (subjects == null)
             {
                 return NotFound();
@@ -176,6 +179,7 @@ namespace School._Distance_Learning.Controllers
 
             var subjects = await _context.Subjects
                 .FirstOrDefaultAsync(m => m.SubjectId == id);
+
             if (subjects == null)
             {
                 return NotFound();

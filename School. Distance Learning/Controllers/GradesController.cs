@@ -33,6 +33,7 @@ namespace School._Distance_Learning.Controllers
             }
 
             var grades = await _context.Grades
+                .Include(g => g.Pupils)
                 .FirstOrDefaultAsync(m => m.GradeId == id);
             if (grades == null)
             {

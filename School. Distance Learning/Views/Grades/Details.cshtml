@@ -30,6 +30,31 @@
         </dd>
     </dl>
 </div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Pupils
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var pupil in Model.Pupils)
+        {
+            <tr>
+                <td>
+                    @pupil.FullName
+                </td>
+                <td>
+                    <a asp-controller="Pupils" asp-action="Details" asp-route-id="@pupil.PupilId">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model.GradeId">Edit</a> |
     <a asp-action="Index">Back to List</a>

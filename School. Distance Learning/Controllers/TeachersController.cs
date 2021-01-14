@@ -163,7 +163,10 @@ namespace School._Distance_Learning.Controllers
             }
 
             var teachers = await _context.Teachers
+                .Include(t => t.TeacherSubject)
+                .ThenInclude(ts => ts.Subject)
                 .FirstOrDefaultAsync(m => m.TeacherId == id);
+
             if (teachers == null)
             {
                 return NotFound();
