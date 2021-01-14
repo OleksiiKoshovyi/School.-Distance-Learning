@@ -49,49 +49,47 @@ namespace School._Distance_Learning.Areas.Teacher.Controllers
             try
             {
                 await conn.OpenAsync();
-                using (var command = conn.CreateCommand())
+                using var command = conn.CreateCommand();
+                string query =
+                    "SELECT tt.TimetableId, tt.TeacherSubjectGroupId, hw.HomeworkId, tt.LessonNumber, s.SubjectName, gi.GradeName, hw.Homework " +
+                    "FROM Timetables tt " +
+                    "LEFT JOIN TeacherSubjectGroup tsg ON tt.TeacherSubjectGroupId = tsg.TeacherSubjectGroupId " +
+                    "LEFT JOIN Groups g ON g.GroupId = tsg.GroupId " +
+                    "LEFT JOIN GradesInfo gi ON gi.GradeId = g.GradeId " +
+                    "LEFT JOIN TeacherSubject ts ON ts.TeacherSubjectId = tsg.TeacherSubjectId " +
+                    "LEFT JOIN Subjects s ON s.SubjectId = ts.SubjectId " +
+                    $"LEFT JOIN Homeworks hw ON hw.PassDate = '{date?.ToString("yyyy-MM-dd")}' " +
+                        "AND hw.TeacherSubjectGroupId = tt.TeacherSubjectGroupId " +
+                    $"WHERE tt.WeekDayNumber = DATEPART( dw , '{date?.ToString("yyyy-MM-dd")}') " +
+                        $"AND ts.TeacherId = {teacherid} " +
+                    "ORDER BY tt.LessonNumber;";
+
+                command.CommandText = query;
+                DbDataReader reader = await command.ExecuteReaderAsync();
+
+                if (reader.HasRows)
                 {
-                    string query =
-                        "SELECT tt.TimetableId, tt.TeacherSubjectGroupId, hw.HomeworkId, tt.LessonNumber, s.SubjectName, gi.GradeName, hw.Homework " +
-                        "FROM Timetables tt " +
-                        "LEFT JOIN TeacherSubjectGroup tsg ON tt.TeacherSubjectGroupId = tsg.TeacherSubjectGroupId " +
-                        "LEFT JOIN Groups g ON g.GroupId = tsg.GroupId " +
-                        "LEFT JOIN GradesInfo gi ON gi.GradeId = g.GradeId " +
-                        "LEFT JOIN TeacherSubject ts ON ts.TeacherSubjectId = tsg.TeacherSubjectId " +
-                        "LEFT JOIN Subjects s ON s.SubjectId = ts.SubjectId " +
-                        $"LEFT JOIN Homeworks hw ON hw.PassDate = '{date?.ToString("yyyy-MM-dd")}' " +
-                            "AND hw.TeacherSubjectGroupId = tt.TeacherSubjectGroupId " +
-                        $"WHERE tt.WeekDayNumber = DATEPART( dw , '{date?.ToString("yyyy-MM-dd")}') " +
-                            $"AND ts.TeacherId = {teacherid} " +
-                        "ORDER BY tt.LessonNumber;";
-
-                    command.CommandText = query;
-                    DbDataReader reader = await command.ExecuteReaderAsync();
-
-                    if (reader.HasRows)
+                    while (await reader.ReadAsync())
                     {
-                        while (await reader.ReadAsync())
+                        var row = new IndexViewModel
                         {
-                            var row = new IndexViewModel
-                            {
-                                timetableId = reader.GetInt32(0),
-                                teacherSubjectGroupId = reader.GetInt32(1),
-                                lessonNumber = reader.GetInt32(3),
-                                subject = reader.GetString(4)
-                            };
+                            timetableId = reader.GetInt32(0),
+                            teacherSubjectGroupId = reader.GetInt32(1),
+                            lessonNumber = reader.GetInt32(3),
+                            subject = reader.GetString(4),
+                            grade = reader.GetString(5)
+                        };
 
-                            if (!reader.IsDBNull(2))
-                            {
-                               row.homeworkId = reader.GetInt32(2);
-                               row.grade = reader.GetString(5);
-                               row.homework = reader.GetString(6);
-                            }
-
-                            homework.Add(row);
+                        if (!reader.IsDBNull(2))
+                        {
+                            row.homeworkId = reader.GetInt32(2);
+                            row.homework = reader.GetString(6);
                         }
+
+                        homework.Add(row);
                     }
-                    reader.Dispose();
                 }
+                reader.Dispose();
             }
             finally
             {
