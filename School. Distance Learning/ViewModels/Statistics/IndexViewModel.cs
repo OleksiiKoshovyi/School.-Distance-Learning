@@ -38,7 +38,8 @@ namespace School._Distance_Learning.ViewModels.Statistics
             {
                 if (WorkingHoursNumber != 0)
                 {
-                    return (double)RealWorkingHoursNumber / (double)WorkingHoursNumber;
+                    return Math.Round((double)RealWorkingHoursNumber /
+                        (double)WorkingHoursNumber, 5);
                 }
 
                 return 0;
@@ -69,7 +70,8 @@ namespace School._Distance_Learning.ViewModels.Statistics
             {
                 if (TimetableHoursNumber != 0)
                 {
-                    return (double)HomeworkHoursNumber / (double)TimetableHoursNumber;
+                    return Math.Round((double)HomeworkHoursNumber /
+                        (double)TimetableHoursNumber, 5);
                 }
 
                 return 0;
@@ -93,8 +95,8 @@ namespace School._Distance_Learning.ViewModels.Statistics
             {
                 if (TimetableHoursNumber != 0)
                 {
-                    return (double)SkippingClassesNumber
-                        / (double)TimetableHoursNumber;
+                    return Math.Round((double)SkippingClassesNumber
+                        / (double)TimetableHoursNumber, 5);
                 }
 
                 return 0;
