@@ -360,17 +360,33 @@ namespace School._Distance_Learning.Controllers
                     .Where(gs => gs.GradeId == grades[gradeIndex].GradeId)
                     .ToList();
 
-                // Operating by TypeGroup
-                foreach (var currentTeacherSubjectGroup in currentGroups)
-                {
-                    int time =
-                        currentGradeSubjects
-                        .Find(gs => gs.SubjectId == currentTeacherSubjectGroup
-                        .TeacherSubject.SubjectId)
-                        ?.HoursNumber ?? 0;
+                List<Teachers> currentTeachers =
+                    currentGroups
+                    .Select(gts => gts.TeacherSubject.Teacher)
+                    .Distinct()
+                    .ToList();
 
-                    // Same Subjects
-                    SetPartTimetable(timetables, gradeIndex, time, new List<TeacherSubjectGroup>(){currentTeacherSubjectGroup}, random, 7);
+                // Operating by TypeGroup
+                foreach (var teacher in currentTeachers)
+                {
+                    List<TeacherSubjectGroup> tsgForTeacher = currentGroups
+                        .Where(tsg => tsg.TeacherSubject.Teacher.TeacherId == teacher.TeacherId)
+                        .ToList();
+
+                    int mask = 0;
+
+                    foreach (var currentTeacherSubjectGroup in tsgForTeacher)
+                    {
+
+                        int time =
+                            currentGradeSubjects
+                            .Find(gs => gs.SubjectId == currentTeacherSubjectGroup
+                            .TeacherSubject.SubjectId)
+                            ?.HoursNumber ?? 0;
+
+                        // Same Subjects
+                        mask = SetPartTimetable(timetables, gradeIndex, time, new List<TeacherSubjectGroup>() { currentTeacherSubjectGroup }, random, 7, mask);
+                    }
                 }
             }
             #endregion
