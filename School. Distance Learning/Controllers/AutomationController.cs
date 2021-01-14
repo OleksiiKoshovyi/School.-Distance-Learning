@@ -247,21 +247,34 @@ namespace School._Distance_Learning.Controllers
                         .ThenBy(tsg => tsg.GroupId)
                         .ToList();
 
-                    int firstTime = currentGradeSubjects.Find(gs => gs.SubjectId == currentTypeGroup[0].TeacherSubject.SubjectId).HoursNumber;
-                    int secondTime = currentGradeSubjects.Find(gs => gs.SubjectId == currentTypeGroup[2].TeacherSubject.SubjectId).HoursNumber;
+                    int firstTime =
+                        currentGradeSubjects.Find(
+                            gs => gs.SubjectId == currentTypeGroup[0]
+                            .TeacherSubject.SubjectId)?.HoursNumber ?? 0;
+                    
+                    int secondTime =
+                        currentGradeSubjects.Find(
+                            gs => gs.SubjectId == currentTypeGroup[2]
+                            .TeacherSubject.SubjectId)?.HoursNumber ?? 0;
 
                     int minHoursNumber = Math.Min(firstTime, secondTime);
 
                     // Different Subjects
-                    List<TeacherSubjectGroup> firstSet = new List<TeacherSubjectGroup> { currentTypeGroup[0], currentTypeGroup[3] };
-                    List<TeacherSubjectGroup> secondSet = new List<TeacherSubjectGroup> { currentTypeGroup[1], currentTypeGroup[2] };
+                    List<TeacherSubjectGroup> firstSet =
+                        new List<TeacherSubjectGroup> { currentTypeGroup[0], currentTypeGroup[3] };
+
+                    List<TeacherSubjectGroup> secondSet =
+                        new List<TeacherSubjectGroup> { currentTypeGroup[1], currentTypeGroup[2] };
 
                     int mask = SetPartTimetable(timetables, gradeIndex, minHoursNumber, firstSet, random, 7);        
                     mask = SetPartTimetable(timetables, gradeIndex, minHoursNumber, secondSet, random, 7, mask);
 
                     // Same Subjects
-                    firstSet = new List<TeacherSubjectGroup> { currentTypeGroup[0], currentTypeGroup[1] };
-                    secondSet = new List<TeacherSubjectGroup> { currentTypeGroup[2], currentTypeGroup[3] };
+                    firstSet =
+                        new List<TeacherSubjectGroup> { currentTypeGroup[0], currentTypeGroup[1] };
+
+                    secondSet =
+                        new List<TeacherSubjectGroup> { currentTypeGroup[2], currentTypeGroup[3] };
 
                     mask = SetPartTimetable(timetables, gradeIndex, firstTime - minHoursNumber, firstSet, random, 7, mask);
                     mask = SetPartTimetable(timetables, gradeIndex, secondTime - minHoursNumber, secondSet, random, 7, mask);
@@ -310,7 +323,7 @@ namespace School._Distance_Learning.Controllers
                         currentGradeSubjects
                         .Find(gs => gs.SubjectId == currentTypeGroup[0]
                         .TeacherSubject.SubjectId)
-                        .HoursNumber;
+                        ?.HoursNumber ?? 0;
 
                     // Same Subjects
                     SetPartTimetable(timetables, gradeIndex, time, currentTypeGroup, random, 7);
@@ -336,10 +349,12 @@ namespace School._Distance_Learning.Controllers
             for (int gradeIndex = 0; gradeIndex < grades.Count(); gradeIndex++)
             {
                 // TeacherSubjectGroup for current grade
+                // Teacher - Subject - Group (Grade)
                 List<TeacherSubjectGroup> currentGroups =
                     tsubGrades.Where(tsg => tsg.Group.GradeId == grades[gradeIndex].GradeId)
                     .ToList();
 
+                // HoursNumber for each subject
                 List<GradeSubject> currentGradeSubjects =
                     gradeSubjects
                     .Where(gs => gs.GradeId == grades[gradeIndex].GradeId)
@@ -352,10 +367,10 @@ namespace School._Distance_Learning.Controllers
                         currentGradeSubjects
                         .Find(gs => gs.SubjectId == currentTeacherSubjectGroup
                         .TeacherSubject.SubjectId)
-                        .HoursNumber;
+                        ?.HoursNumber ?? 0;
 
                     // Same Subjects
-                    SetPartTimetable(timetables, gradeIndex, time, new List<TeacherSubjectGroup>(){ currentTeacherSubjectGroup}, random, 7);
+                    SetPartTimetable(timetables, gradeIndex, time, new List<TeacherSubjectGroup>(){currentTeacherSubjectGroup}, random, 7);
                 }
             }
             #endregion
