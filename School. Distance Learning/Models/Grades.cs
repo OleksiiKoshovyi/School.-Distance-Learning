@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -40,6 +41,16 @@ namespace School._Distance_Learning.Models
                 }
                 return $"{number} {Letter}";
             } 
+        }
+
+        public int HoursNumber
+        { 
+            get 
+            {
+                return GradeSubject
+                    ?.Select(gs => gs.HoursNumber)
+                    .Aggregate(0, (sum, curr) => sum + curr) ?? 0;
+            }
         }
 
         public virtual ICollection<GradeSubject> GradeSubject { get; set; }
